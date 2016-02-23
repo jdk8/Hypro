@@ -1,0 +1,517 @@
+#include "vmmcall.h"
+#include "initfunc.h"
+#include "printf.h"
+#include "panic.h"
+#include "current.h"
+#include "vt_ept.h"
+#include "string.h"
+#include "process.h"
+
+
+struct memdump_data {
+     u64 physaddr;
+     u64 cr0, cr3, cr4, efer;
+     ulong virtaddr;
+};
+
+struct memdump_hvirt_data {
+     u8 *virtsrc, *virtdes;
+     int sendlen;
+};
+
+
+//Process Informations
+struct msgdsc_data {
+        int pid;
+        int gen;
+        int dsc;
+        void *func;
+};
+
+struct process_data {
+        bool valid;
+        phys_t mm_phys;
+        int gen;
+        int running;
+        struct msgdsc_data msgdsc[NUM_OF_MSGDSC];
+        bool exitflag;
+        bool restrict;
+        int stacksize;
+};
+
+extern struct process_data process[NUM_OF_PID];
+
+u64 vmi_translate_ksym2v(char * ksym)
+{
+	u64 addr = 0;
+	if ( !strcmp(ksym, "init_task") ) {
+         addr  = 0xffffffff81c15480;
+        }
+       return addr;
+}
+
+u64 vmi_get_offset(char *offset_name)
+{
+   if (strcmp(offset_name, "linux_tasks") == 0) {
+        return 0x270;
+    } else  if (strcmp(offset_name, "linux_pid") == 0) {
+        return 0x2e4;
+    } else  if (strcmp(offset_name, "linux_name") == 0) {
+        return 0x4a8;
+    }
+    return 0x0;
+}
+
+u64 vmi_translate_kv2p(
+    addr_t vaddr)
+{
+    return 0;
+}
+
+u64 vmi_translate_uv2p(
+    addr_t vaddr,
+    int pid)
+{
+
+    return 0;
+}
+
+u64 get_pdpi (u32 vaddr, u32 cr3)
+{
+    uint64_t value;
+    uint32_t pdpi_entry = get_pdptb(cr3) + pdpi_index(vaddr);
+
+    dbprint("--PTLookup: pdpi_entry = 0x%.8x\n", pdpi_entry);
+    vmi_read_64_pa(instance, pdpi_entry, &value);
+    return value;
+}
+
+
+u64 v2p_pae (u64 dtb, u64 vaddr)
+{
+    u64 paddr = 0;
+    u64 pdpe, pgd, pte;
+
+    printf("--PTLookup: lookup vaddr = 0x%.16"PRIx64"\n", vaddr);
+    printf("--PTLookup: dtb = 0x%.16"PRIx64"\n", dtb);
+    
+    pdpe = get_pdpi(vmi, vaddr, dtb);
+    printf("--PTLookup: pdpe = 0x%.16"PRIx64"\n", pdpe);
+    if (!entry_present(vmi->os_type, pdpe)) {
+        return paddr;
+    }
+    pgd = get_pgd_pae(vmi, vaddr, pdpe);
+    printf("--PTLookup: pgd = 0x%.16"PRIx64"\n", pgd);
+
+    if (entry_present(vmi->os_type, pgd)) {
+        if (page_size_flag(pgd)) {
+            paddr = get_large_paddr(vmi, vaddr, pgd);
+            printf("--PTLookup: 2MB page\n");
+        }
+        else {
+            pte = get_pte_pae(vmi, vaddr, pgd);
+            printf("--PTLookup: pte = 0x%.16"PRIx64"\n", pte);
+            if (entry_present(vmi->os_type, pte)) {
+                paddr = get_paddr_pae(vaddr, pte);
+            }
+        }
+    }
+    printf("--PTLookup: paddr = 0x%.16"PRIx64"\n", paddr);
+    return paddr;
+}
+
+u64 vmi_pagetable_lookup (u64 dtb, u64 vaddr)
+{
+    u64 paddr = 0;
+
+    /* do the actual page walk in guest memory */
+    paddr = v2p_pae(dtb, vaddr);
+    return paddr;
+}
+
+
+u64 vmi_translate_kv2p (u64 virt_address)
+{
+    u64 cr3  = 	current->u.vt.spt_cr3 ;
+    return vmi_pagetable_lookup(cr3, virt_address);
+}
+
+
+static u64
+linux_get_taskstruct_addr_from_pid( int pid)
+{
+    addr_t list_head = 0, next_process = 0;
+    int task_pid = -1;
+    int pid_offset = vmi->os.linux_instance.pid_offset;
+    int tasks_offset = vmi->os.linux_instance.tasks_offset;
+
+    /* First we need a pointer to the initial entry in the tasks list.
+     * Note that this is task_struct->tasks, not the base addr
+     *  of task_struct: task_struct base = $entry - tasks_offset.
+     */
+    next_process = vmi->init_task;
+    list_head = next_process;
+
+    do {
+        vmi_read_32_va(vmi, next_process + pid_offset, 0, &task_pid);
+
+        /* if pid matches, then we found what we want */
+        if (task_pid == pid) {
+            return next_process;
+        }
+
+        vmi_read_addr_va(vmi, next_process + tasks_offset, 0, &next_process);
+        next_process -= tasks_offset;
+
+        /* if we are back at the list head, we are done */
+    } while(list_head != next_process);
+
+error_exit:
+    return 0;
+}
+
+
+u64 linux_pid_to_pgd( int pid)
+{
+    u64 ts_addr = 0, pgd = 0, ptr = 0;
+    int width = 0;
+    int rc = VMI_FAILURE;
+    int mm_offset = vmi->os.linux_instance.mm_offset;
+    int pgd_offset = vmi->os.linux_instance.pgd_offset;
+
+    /* May fail for some drivers, but handle gracefully below by 
+     * testing width 
+     */
+   // rc = driver_get_address_width(&width);
+    //get_address_width_ptr(&width);
+     width = 4;// or 8
+ 
+    /* first we the address of this PID's task_struct */
+    ts_addr = linux_get_taskstruct_addr_from_pid(vmi, pid);
+    if (!ts_addr) {
+        printf("Could not find task struct for pid = %d.\n", pid);
+        goto error_exit;
+    }
+
+    /* now follow the pointer to the memory descriptor and grab the pgd value */
+    vmi_read_addr_va(ts_addr + mm_offset, 0, &ptr);
+
+    /* task_struct->mm is NULL when Linux is executing on the behalf
+     * of a task, or if the task represents a kthread. In this context, 
+     * task_struct->active_mm is non-NULL and we can use it as
+     * a fallback. task_struct->active_mm can be found very reliably
+     * at task_struct->mm + 1 pointer width
+     */
+    if(!ptr && width)
+        vmi_read_addr_va(ts_addr + mm_offset + width, 0, &ptr);
+    vmi_read_addr_va(ptr + pgd_offset, 0, &pgd);
+
+    /* convert pgd into a machine address */
+    pgd = vmi_translate_kv2p(pgd);
+
+error_exit:
+    return pgd;
+}
+
+
+u64 vmi_pid_to_dtb (int pid)
+{
+    u64 dtb = 0;
+
+    if (VMI_FAILURE == pid_cache_get(pid, &dtb)) {
+            dtb = linux_pid_to_pgd(pid);
+        
+        if (dtb) {
+            pid_cache_set(pid, dtb);
+        }
+    }
+
+    return dtb;
+}
+
+  
+/* expose virtual to physical mapping for user space via api call */
+u64 vmi_translate_uv2p_nocache (u64 virt_address, int pid)
+{
+    u64 dtb = vmi_pid_to_dtb(pid);
+
+    if (!dtb) {
+        printf("--early bail on v2p lookup because dtb is zero\n");
+        return 0;
+    }
+    else {
+        u64 rtnval = vmi_pagetable_lookup(dtb, virt_address);
+
+        if (!rtnval) {
+            pid_cache_del(pid);
+        }
+        return rtnval;
+    }
+}
+
+u64 vmi_translate_uv2p (u64 virt_address, int pid)
+{
+    u64 dtb = vmi_pid_to_dtb(pid);
+
+    if (!dtb) {
+        printf("--early bail on v2p lookup because dtb is zero\n");
+        return 0;
+    }
+    else {
+        u64 rtnval = vmi_pagetable_lookup(dtb, virt_address);
+
+        if (!rtnval) {
+            if (VMI_SUCCESS == pid_cache_del(pid)) {
+                return vmi_translate_uv2p_nocache(virt_address, pid);
+            }
+        }
+        return rtnval;
+    }
+}
+
+
+
+char * vmi_read_str_va(
+    u64 vaddr,
+    int pid)
+{
+    unsigned char *memory = NULL;
+    char *rtnval = NULL;
+    u64 paddr = 0;
+    u64 pfn = 0;
+    u64 offset = 0;
+    int len = 0;
+    size_t read_len = 0;
+    int read_more = 1;
+    int page_shift = 12;
+    int page_size = 1 << page_shift;
+    rtnval = NULL;
+
+    while (read_more) {
+        if (pid) {
+            paddr = vmi_translate_uv2p(vaddr + len, pid);
+        }
+        else {
+            paddr = vmi_translate_kv2p(vaddr + len);
+        }
+
+        if (!paddr) {
+            return rtnval;
+        }
+
+        /* access the memory */
+        pfn = paddr >> page_shift;
+        offset = (page_size - 1) & paddr;
+        memory = vmi_read_page( pfn);
+        if (NULL == memory) {
+            return rtnval;
+        }
+
+        /* Count new non-null characters */
+        read_len = 0;
+        while (offset + read_len < page_size) {
+            if (memory[offset + read_len] == '\0') {
+                read_more = 0;
+                break;
+            }
+
+            read_len++;
+        }
+
+        /* Otherwise, realloc, tack on the '\0' in case of errors and
+         * get ready to read the next page.
+         */
+        rtnval = realloc(rtnval, len + 1 + read_len);
+        memcpy(&rtnval[len], &memory[offset], read_len);
+        len += read_len;
+        rtnval[len] = '\0';
+    }
+
+    return rtnval;
+}
+
+
+
+size_t
+vmi_read_va(
+    u64 vaddr,
+    int pid,
+    void *buf,
+    size_t count)
+{
+    unsigned char *memory = NULL;
+    u64 paddr = 0;
+    u64 pfn = 0;
+    u64 offset = 0;
+    size_t buf_offset = 0;
+    int page_shift = 12;
+    int page_size = 1 << page_shift;
+
+    if (NULL == buf) {
+        printf("--%s: buf passed as NULL, returning without read\n",
+                __FUNCTION__);
+        return 0;
+    }
+
+    while (count > 0) {
+        size_t read_len = 0;
+
+        if (pid) {
+            paddr = vmi_translate_uv2p(vaddr + buf_offset, pid);
+        }
+        else {
+            paddr = vmi_translate_kv2p(vaddr + buf_offset);
+        }
+
+        if (!paddr) {
+            return buf_offset;
+        }
+
+        /* access the memory */
+        pfn = paddr >> page_shift;
+        offset = (page_size - 1) & paddr;
+        memory = vmi_read_page(pfn);//Physical Memory! Will Invoke Xen Library.
+        // vmi_read_page -> driver_read_page -> read_page_ptr=xen_read_page -> memory_cache_insert
+        // -> get_memory_data -> get_data_callback -> get_data=xen_get_memory -> xen_get_memory_pfn -> xc_map_foreign_range
+        if (NULL == memory) {
+            return buf_offset;
+        }
+
+        /* determine how much we can read */
+        if ((offset + count) > page_size) {
+            read_len = page_size - offset;
+        }
+        else {
+            read_len = count;
+        }
+        /* do the read */
+        memcpy(((char *) buf) + (u64) buf_offset,
+               memory + (u64) offset, read_len);
+
+        /* set variables for next loop */
+        count -= read_len;
+        buf_offset += read_len;
+    }
+
+    return buf_offset;
+}
+
+
+
+void vmi_read_X_va(u64 vaddr, int pid, void *value, int size)
+{
+    vmi_read_va(vaddr, pid, value, size);
+}
+
+void
+vmi_read_32_va(
+    u64 vaddr,
+    int pid,
+    u32 * value)
+{
+    return vmi_read_X_va(vaddr, pid, value, 4);
+}
+
+
+void vmi_read_64_va(u64 vaddr, int pid, u64 * value)
+{
+    vmi_read_X_va(vaddr, pid, value, 8);
+}
+
+void vmi_read_addr_va(u64 vaddr, int pid, u64 *value)
+{
+    vmi_read_64_va(vaddr, pid, value);
+}
+
+static void
+test (void){
+   ulong rbx;
+   printf("test vmmcall_test!\n");
+   current->vmctl.read_general_reg (GENERAL_REG_RBX, &rbx);
+   int i;
+   printf("The Process List is:\n");
+   for(i=0; i<NUM_OF_MSGDSC; i++) {
+        struct process_data pd = process[0];
+        printf("PID: %d\n", pd.msgdsc[i].dsc);
+   }
+
+   u64 current_process;
+   unsigned long tasks_offset, pid_offset, name_offset;
+   u64 list_head = 0, current_list_entry = 0, next_list_entry = 0;
+   u32 pid = 0;
+   char *procname = NULL;
+
+
+   current_process = vmi_translate_ksym2v("init_task");
+   tasks_offset = vmi_get_offset("linux_tasks"); 
+   pid_offset = vmi_get_offset("linux_pid");
+   name_offset = vmi_get_offset("linux_name");
+
+ 
+    list_head = current_process + tasks_offset;
+    current_list_entry = list_head;
+    vmi_read_addr_va(current_list_entry, 0, &next_list_entry); 
+    printf("Next list entry is at: %lx\n", next_list_entry);
+    do {
+        vmi_read_32_va(current_process + pid_offset, 0, &pid);
+
+        procname = vmi_read_str_va(current_process + name_offset, 0);
+
+        if (!procname) {
+            printf("Failed to find procname\n");
+        }
+
+        printf("[%5d] %s (struct addr:%lx)\n", pid, procname, current_process);
+        if (procname) {
+            free(procname);
+            procname = NULL;
+        }
+
+        current_list_entry = next_list_entry;
+        current_process = current_list_entry - tasks_offset;
+
+        vmi_read_addr_va(current_list_entry, 0, &next_list_entry);
+
+    } while (next_list_entry != list_head);
+
+
+}
+
+void printhex(char * data, u64 addr){
+   printf("%S", __func__);
+   /* printf("%08llx ", addr); */
+   /* int i; */
+   /* for(i = 0; i < 8; ++i){ */
+   /*   if(data[i] < 0) */
+   /*     printf(" "); */
+   /*   else */
+   /*     printf(" %02X", data[i]); */
+   /* } */
+   /* printf("\n"); */
+
+}
+
+void
+set_syscall_trigger(void){
+   printf("%s\n", __func__);
+   phys_t phys = 0x0ULL;
+   char data[sizeof(struct memdump_hvirt_data)];
+   memset(data, 0, sizeof(*data));
+   struct memdump_hvirt_data * d = (struct memdump_hvirt_data *)data;
+   char temp[128];
+   memset(temp, 0, 128);
+   d->virtdes = temp;
+   d->virtsrc = 0;
+   d->sendlen = 128;
+   memcpy(d->virtdes, d->virtsrc, (u64)d->sendlen);
+   printhex(temp, (u64)d->virtsrc);
+   //printf("not error!\n");
+
+}
+
+static void
+vmmcall_test_init (void){
+     vmmcall_register ("vmmcall_test", test);
+}
+
+INITFUNC ("vmmcal0", vmmcall_test_init);
