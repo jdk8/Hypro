@@ -10,8 +10,8 @@ vmmcall_test (void)
      call_vmm_arg_t a;
      call_vmm_ret_t r;
 
+
     CALL_VMM_GET_FUNCTION ("vmmcall_test", &f);
-    //CALL_VMM_GET_FUNCTION ("vmmcall_dump_memory", &f);
  
     if (!call_vmm_function_callable (&f)){
              printf("error!\n");

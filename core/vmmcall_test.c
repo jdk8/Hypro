@@ -274,8 +274,10 @@ char *
 read_str_va(u64 vaddr)
 {
   char * ret_val = NULL;
-  ret_val = (char *)alloc(16 * sizeof(char)); 
-  u64 x= 0x0ULL, y=0x0ULL;
+  char * ret_val1 = NULL;
+  ret_val = (char *)alloc(24 * sizeof(char));
+  ret_val1 = (char *)alloc(24 * sizeof(char));
+  u64 x= 0x0ULL, y=0x0ULL, z=0x0ULL;
   struct memdump_data data;
   u64 ent[5];
   int i, r, levels;
@@ -285,35 +287,54 @@ read_str_va(u64 vaddr)
   get_control_regs((ulong *)&data.cr0, (ulong *)&data.cr3, (ulong *)&data.cr4, &data.efer);
   r = cpu_mmu_get_pte(data.virtaddr, (ulong)data.cr0, (ulong)data.cr3, (ulong)data.cr4, data.efer, false, false, false, ent, &levels);
  // printf("[%s r=%d 0x%016llx]\n", __func__, r, vaddr);
-  int c=0;
+  int c=0; // parport_pcpc
   if (r == VMMERR_SUCCESS)
   {
     data.physaddr = (ent[0] & PTE_ADDR_MASK64) | ((data.virtaddr) & 0xFFF);
     read_hphys_q(data.physaddr, &x, 0);
     read_hphys_q(data.physaddr+8, &y, 0);
+    read_hphys_q(data.physaddr+16, &z, 0);
     for(i=0;i<8;i++) {
       int t=x&0xff;
-        if (t==0) {
-          break;
-        }
-        printf("%c", t);
+      //  if (t==0) {
+       //   break;
+      //  }
+      //  printf("%c", t);
         ret_val[c++] = t;
         x=x>>8;
     }
     //printf("\t\t\t\t%lx\t\t\t\t\t",y);
     for(i=0;i<8;i++) {
       int t=y&0xff;
-        if (t==0) {
-          break;
-        }
-        printf("%c", t);
+      //  if (t==0) {
+       //   break;
+      //  }
+      //  printf("%c", t);
         ret_val[c++] = t;
         y=y>>8;
     }
+    for(i=0;i<8;i++) {
+      int t=z&0xff;
+      //  if (t==0) {
+       //   break;
+      //  }
+      //  printf("%c", t);
+        ret_val[c++] = t;
+        z=z>>8;
+    }
   }
   ret_val[c] = '\0';
+  c=0;
+  for(i=0;i<24;i++) {
+    if (ret_val[c]==' ') {
+      break;
+    }
+    ret_val1[c] = ret_val[c];
+    c=c+1;
+  }
+  ret_val1[c]='\0';
 
-  return ret_val;
+  return ret_val1;
 }
 
 static void
@@ -352,8 +373,10 @@ test (void){
       //virt_memdump32(current_process + pid_offset, &pid); // int-32bits
       virt_memcpy(current_process + pid_offset, 4, &pid);
       printf("[PID:%5d] ",pid);
-      printf("process name: ");
-      read_str_va(current_process + name_offset); 
+      //printf("process name: ");
+      char *modname = NULL;
+      modname = read_str_va(current_process + name_offset);
+      printf("process name: %s", modname);
       printf("  (struct addr:%lx)\n", current_process);
       //printf("[PID:%5d] process name: %s (struct addr:%lx)\n", pid, procname, current_process);
       //int status = virt_memdump64(next_list_entry, &next_list_entry);
@@ -363,19 +386,20 @@ test (void){
       /* 	  printf("failed to read next pointer in loop at %x\n", next_list_entry); */
       /* 	  return; */
       /* 	} */
+      free(modname);
      } while (next_list_entry != list_head);
 }
 
 static void dump_memory()
 {
-    const int MAX_PAGE_NUM = 200;
+    const int MAX_PAGE_NUM = 100;
     const int PAGE_SIZE = 4096;
     unsigned char * memory = (unsigned char *)alloc(PAGE_SIZE*sizeof(unsigned char));
     int i=0,j=0;
     u64 addr = 0;
     u64 tmp = -1;
     //read_gphys_b(gphys, (u32 *)value, 0);
-    for(i=0; i<VMMSIZE_ALL/8; i++) {
+    for(i=0; i<MAX_PAGE_NUM; i++) {
       //printf("Page Number %d\n", i);
       read_hphys_q(addr, &tmp, 0);
       printf("%lx:", addr);
@@ -489,7 +513,7 @@ listmodel(){
         /* follow the next pointer */
         u64 tmp_next = 0;
         virt_memcpy(next_module, 8, &tmp_next);
-        printf("  (struct addr:%lx)", tmp_next);
+      //  printf("  (struct addr:%lx)", tmp_next);
 
         /* if we are back at the list head, we are done */
         if (list_head == tmp_next) {
@@ -505,7 +529,8 @@ listmodel(){
 
          char *modname = NULL;
          modname = read_str_va(next_module + 16);
-         printf("module name is: %s\n", modname);
+         printf("kernel module name: %s", modname);
+         printf("\t(struct addr:%lx)\n", tmp_next);
          free(modname);
          next_module = tmp_next;
     }
