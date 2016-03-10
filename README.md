@@ -9,6 +9,20 @@ core/vmmcall_test.c implements the core VMI functions.
 
 VMI/fs is a ported EXT4 file system from Uboot. With this module, we can reread block device to check to hidden files.
 
+Guest's Fs/(attecked)    VMI/fs
+
+  |_______________________|
+  
+  |
+  
+driver
+
+  |
+  
+hardware
+
+BitVisor uses parapass-through architecture that allows VM's device driver to handle the real device. So VMI/fs is ported to host's OS.
+
 
 How to build:
 Hypro's build can be found in BitVisor's HomePage.
