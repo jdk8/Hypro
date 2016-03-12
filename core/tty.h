@@ -36,6 +36,6 @@ void ttylog_stop (void);
 void tty_putchar (unsigned char c);
 void tty_init_iohook (void);
 
-unsigned char log[65536];
+extern unsigned char log[65536];
 
 #endif

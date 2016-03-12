@@ -53,7 +53,7 @@ struct tty_udp_data {
 };
 
 static int ttyin, ttyout;
-// unsigned char log[65536];
+unsigned char log[65536];
 static int logoffset, loglen;
 static spinlock_t putchar_lock;
 static bool logflag;
