@@ -1,18 +1,18 @@
 .PHONY : all
-all : test pl listmodel printlog
+all : listprocess listmodule dump_memory printlog
 
 .PHONY : clean
 clean :
-	$(RM) test pl listmodel printlog
+	$(RM) listprocess listmodule dump_memory printlog
 
-test : test.c ../common/call_vmm.c ../common/call_vmm.h
-	$(CC) -g -s -o test test.c ../common/call_vmm.c
+listprocess : listprocess.c ../common/call_vmm.c ../common/call_vmm.h
+	$(CC) -g -s -o listprocess listprocess.c ../common/call_vmm.c
 
-pl : pl.c ../common/call_vmm.c ../common/call_vmm.h
-	$(CC) -g -s -o pl pl.c ../common/call_vmm.c
+listmodule : listmodule.c ../common/call_vmm.c ../common/call_vmm.h
+	$(CC) -g -s -o listmodule listmodule.c ../common/call_vmm.c
 
-listmodel : listmodel.c ../common/call_vmm.c ../common/call_vmm.h
-	$(CC) -g -s -o listmodel listmodel.c ../common/call_vmm.c
+dump_memory : dump_memory.c ../common/call_vmm.c ../common/call_vmm.h
+	$(CC) -g -s -o dump_memory dump_memory.c ../common/call_vmm.c
 
 printlog : printlog.c ../common/call_vmm.c ../common/call_vmm.h
 	$(CC) -g -s -o printlog printlog.c ../common/call_vmm.c

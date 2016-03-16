@@ -2,7 +2,7 @@ Hypro - VMI on BitVisor to detect hidden rootkits.
 
 tools/adore-ng is a well-known LKM(loadable kernel modules) rootkit for getting root privilege, hiding certain processes, files, ports, .etc.
 tools/hypercall has the files to read VM's processes, loaded kernel modules, physical memory from VMM, so we can check the differences to find exceptions.
-core/vmmcall_test.c implements the core VMI functions.
+core/vmmcall_vmi.c implements the core VMI functions.
 VMI/fs is a ported EXT4 file system from Uboot. With this module, we can reread block device to check to hidden files.
 Guest's Fs/(attecked)    VMI/fs
   |_______________________|
