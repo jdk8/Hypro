@@ -186,7 +186,7 @@ int ext4fs_probe(block_dev_desc_t *fs_dev_desc, disk_partition_t *fs_partition)
 
     if (!ext4fs_mount(fs_partition->size))
     {
-        ext4fs_close();
+//        ext4fs_close();
         return -1;
     }
 

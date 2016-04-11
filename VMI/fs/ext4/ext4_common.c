@@ -1452,8 +1452,15 @@ static int ext4fs_blockgroup(struct ext2_data *data, int group, struct ext2_bloc
     unsigned int blkoff, desc_per_blk;
     int log2blksz = get_fs()->dev_desc->log2blksz;
 
+    /* super block's log2_block_size field records block size, 0 means 1K, 1 means 2K, 2 means 4K,
+       EXT2_MIN_BLOCK_LOG_SIZE is 10 which is bit offset for 1K */
+    /* group descriptor size is 32 bytes, so one block (4K) can store 128 GD,
+       GDT is more than 1 block, GDT cost block number is calculated by (all GD count) / 128 */
     desc_per_blk = EXT2_BLOCK_SIZE(data) / sizeof(struct ext2_block_group);
 
+    /* super block's first_data_block field is always 0 and of course first data block is always 1.
+       for boot block (always sector 0/1), super block (always sector 2/3).
+       for GDT is always from 8 (4K block size for example) */
     blkno = le32_to_uint32(&(data->sblock.first_data_block)) + 1 + group / desc_per_blk;
     blkoff = (group % desc_per_blk) * sizeof(struct ext2_block_group);
 
@@ -1472,15 +1479,25 @@ int ext4fs_read_inode(struct ext2_data *data, int ino, struct ext2_inode *inode)
     long int blkno;
     unsigned int blkoff;
 
+    /* ino (inode number) reduce 1 is because inode is address from 1, inode 0 is invalid (not cost sector space), inode 1 store in inode 0 place */
+    /* If block size is 1024 bytes, 1 block size (block bitmap) supports 1024(bytes)*8(bits) = 8192 as max for blocks_per_group, 8M per block group.
+       the same reasion, when block size is 4K, block group size is 128M. */
+    /* for some unknown reasons, linux allocate average 16K bytes for one inode, so inodes_per_group is 8192, but acctually it 8064(I don't know why) */
+    /* Use ino to calculate block group number and then get which group descriptor */
     /* It is easier to calculate if the first inode is 0. */
     ino--;
     status = ext4fs_blockgroup(data, ino / le32_to_uint32(&(sblock->inodes_per_group)), &blkgrp);
     if (status == 0)
         return 0;
 
+    /* inodesz please information ext4fs_mount(), for latest ext4 fs version, inodesz is 256 bytes,
+       for 4K block size, 1 block store 16 inode */
+    /* re-calculate block number and offset in block */
     inodes_per_block = EXT2_BLOCK_SIZE(data) / fs->inodesz;
     blkno = le32_to_uint32(&(blkgrp.inode_table_id)) + (ino % le32_to_uint32(&(sblock->inodes_per_group))) / inodes_per_block;
     blkoff = (ino % inodes_per_block) * fs->inodesz;
+
+    /* re-calculate block number to sector number */
     /* Read the inode. */
     status = ext4fs_devread((lbaint_t)blkno << (LOG2_BLOCK_SIZE(data) - log2blksz), blkoff, sizeof(struct ext2_inode), (char *)inode);
     if (status == 0)
@@ -2193,13 +2210,20 @@ int ext4fs_mount(unsigned part_length)
     if (le16_to_uint16(&(data->sblock.magic)) != EXT2_MAGIC)
         goto fail;
 
+    /* different revision_level has different inode size,
+       early revision has 128 fixed bytes, later more.
+       typically value of ext4 is 256 bytes */
     if (le32_to_uint32(&(data->sblock.revision_level)) == 0)
         fs->inodesz = 128;
     else
         fs->inodesz = le16_to_uint16(&(data->sblock.inode_size));
 
-    printf("EXT2 rev %d, inode_size %d\n",le32_to_uint32(&(data->sblock.revision_level)), fs->inodesz);
+    printf("EXT rev %d, inode_size %d\n",le32_to_uint32(&(data->sblock.revision_level)), fs->inodesz);
 
+    /* ino is inode number.
+       inode 0 is invalid inode
+       inode 1 is bad sector list
+       inode 2 is root directory */
     data->diropen.data = data;
     data->diropen.ino = 2;
     data->diropen.inode_read = 1;

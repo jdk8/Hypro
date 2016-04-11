@@ -38,7 +38,7 @@ LIB = lib$(notdir $(CURDIR)).a
 BIN = $(BIN_SOURCES:%.c=%)
 
 .PHONY : all
-all : OBJS LIBS MOVES
+all : OBJS LIBS MOVES BIN
 
 # -c means only generate object files
 OBJS:
@@ -52,7 +52,7 @@ MOVES:
 	mv $(LIB) $(LIB_DIR)
 #	mv $(BIN) $(BIN_DIR)
 
-test:
+BIN:
 	$(CC) $(CFLAGS) -o $(BIN) $(BIN_SOURCES) $(LDFLAGS)
 	mv $(BIN) $(BIN_DIR)
 

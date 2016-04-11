@@ -46,6 +46,9 @@ int ext4fs_devread(lbaint_t sector, int byte_offset, int byte_len, char *buf)
         return 0;
     }
 
+    /* sector pass in this function is always first sector of a block, so byte_offset is offset in block.
+       We need to re-calculate really sector by (byte_offset / 512), 512 is default physical sector size */
+    /* We also need to re-calculate byte_offset and byte_len for new physical sector */
     /* Get the read to the beginning of a partition */
     sector += byte_offset >> log2blksz;
     byte_offset &= ext4fs_block_dev_desc->blksz - 1;

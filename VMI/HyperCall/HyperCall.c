@@ -12,7 +12,7 @@ uint64_t HyperCall_FS_Read(int8_t* dev, uint64_t lba, uint64_t cnt, int8_t* buf)
     long fd;
     int64_t offset, readcnt;
 
-    fd = open(dev, O_RDONLY);
+    fd = open(dev, O_RDONLY | O_SYNC);
     if (fd == -1)
     {
         printf("open fail: %s\n", dev);
@@ -28,6 +28,10 @@ uint64_t HyperCall_FS_Read(int8_t* dev, uint64_t lba, uint64_t cnt, int8_t* buf)
     }
 
     readcnt = read(fd, buf, cnt*DEFAULT_SECTOR_SIZE);
+
+    fsync(fd);
+
+    close(fd);
 
     return readcnt / DEFAULT_SECTOR_SIZE;
 }
