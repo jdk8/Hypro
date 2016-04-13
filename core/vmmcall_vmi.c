@@ -82,7 +82,7 @@ virt_memcpy(ulong virtaddr, int nr_bytes, void * value){
         }
         return 0;
     }
-  return -1;
+    return -1;
 }
 
 char *
@@ -158,8 +158,9 @@ listprocess (void){
         char *procname = NULL;
         procname = read_str_va(current_process + name_offset);
         printf("process name: %s", procname);
-        printf("  (struct addr:%llx)\n", current_process);
+        printf("  (struct addr:%llx\t", current_process);
         virt_memcpy(next_list_entry, 8, &next_list_entry);
+        printf("val is %llx\n", next_list_entry);
         free(procname);
      } while (next_list_entry != list_head);
 }

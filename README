@@ -12,7 +12,7 @@ driver
 hardware
 BitVisor uses parapass-through architecture that allows VM's device driver to handle the real device. So VMI/fs is ported to host's OS.
 
-New features(such as capture of memory events and register events) are under developement.
+New features(such as capture of memory event and register event) are under developement.
 
 How to build:
 Hypro's build can be found in BitVisor's HomePage.

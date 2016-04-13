@@ -712,14 +712,17 @@ do_xsetbv (void)
 		add_ip ();
 }
 
+static counter = 0;
 static void
 do_ept_violation (void)
 {
 	ulong eqe;
 	u64 gp;
+	int i;
 
 	asm_vmread (VMCS_EXIT_QUALIFICATION, &eqe);
 	asm_vmread64 (VMCS_GUEST_PHYSICAL_ADDRESS, &gp);
+
 	vt_paging_npf (!!(eqe & EPT_VIOLATION_EXIT_QUAL_WRITE_BIT), gp);
 }
 

@@ -2,15 +2,15 @@
 #include <stdio.h> 
 
 static int
-vmmcall_listprocess (void)
+vmmcall_memory_event (void)
 {
-    printf("listprocess!\n");
+    printf("memory_event!\n");
     printf("%s\n", __func__);
     call_vmm_function_t f;
     call_vmm_arg_t a;
     call_vmm_ret_t r;
 
-    CALL_VMM_GET_FUNCTION ("vmmcall_listprocess", &f);
+    CALL_VMM_GET_FUNCTION ("vmmcall_memory_event", &f);
  
     if (!call_vmm_function_callable (&f)){
         printf("error!\n");
@@ -22,9 +22,9 @@ vmmcall_listprocess (void)
     return 0;
 }
 
-static void listprocess()
+static void memory_event()
 {
-    if(vmmcall_listprocess())
+    if(vmmcall_memory_event())
         return;
 }
 
@@ -32,5 +32,5 @@ int
 main()
 {
    printf("%s\n", __func__);
-   listprocess();
+   memory_event();
 }
