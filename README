@@ -4,13 +4,15 @@ tools/adore-ng is a well-known LKM(loadable kernel modules) rootkit for getting 
 tools/hypercall has the files to read VM's processes, loaded kernel modules, physical memory from VMM, so we can check the differences to find exceptions.
 core/vmmcall_vmi.c implements the core VMI functions.
 VMI/fs is a ported EXT4 file system from Uboot. With this module, we can reread block device to check to hidden files.
-Guest's Fs/(attecked)    VMI/fs
+Guest's Fs/(attacked)    VMI/fs
   |_______________________|
   |
 driver
   |
 hardware
 BitVisor uses parapass-through architecture that allows VM's device driver to handle the real device. So VMI/fs is ported to host's OS.
+
+New features(such as capture of memory event and register event) are under developement.
 
 How to build:
 Hypro's build can be found in BitVisor's HomePage.
