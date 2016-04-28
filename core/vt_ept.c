@@ -76,7 +76,7 @@ vt_ept_init (void)
 static void
 vt_ept_map_page (bool write, u64 gphys)
 {
-	int l;
+ 	int l;
 	bool fakerom;
 	u64 hphys;
 	u32 hattr;
@@ -105,16 +105,22 @@ vt_ept_map_page (bool write, u64 gphys)
 		p = (u64 *)phys_to_virt (e);
 	}
 	for (; l > 0; l--) {
+		 
 		*p = ept->tbl_phys[ept->cnt] | EPTE_READEXEC | EPTE_WRITE;
+ 
+		
 		p = ept->tbl[ept->cnt++];
 		memset (p, 0, PAGESIZE);
 		p += (gphys >> (9 * l + 3)) & 0x1FF;
 	}
 	hphys = current->gmm.gp2hp (gphys, &fakerom) & ~PAGESIZE_MASK;
+
 	if (fakerom && write)
 		panic ("EPT: Writing to VMM memory.");
 	hattr = (cache_get_gmtrr_type (gphys) << EPTE_MT_SHIFT) |
 		EPTE_READEXEC | EPTE_WRITE;
+		
+	
 	if (fakerom)
 		hattr &= ~EPTE_WRITE;
 	*p = hphys | hattr;

@@ -11,6 +11,7 @@
 #include "vt_regs.h"
 #include "config.h"
 #include "tty.h"
+#include "limits.h"
 
 typedef enum status{
   VMI_SUCCESS = 0,
@@ -137,6 +138,39 @@ read_str_va(u64 vaddr)
     return ret_val1;
 }
 
+
+static void memcpy_to_usespace(char *buf, ulong buflen)
+{
+    ulong rbx, rcx;  /* virtaddr: rbx, len: rcx*/
+    int i = 0, ret;
+
+    u64 efer, physaddr;
+    ulong cr0, cr3, cr4;
+    u64 ent[5];
+    int levels;
+
+    current->vmctl.read_general_reg (GENERAL_REG_RBX, &rbx);
+    current->vmctl.read_general_reg (GENERAL_REG_RCX, &rcx);
+    current->vmctl.read_control_reg (CONTROL_REG_CR0, &cr0);
+    current->vmctl.read_control_reg (CONTROL_REG_CR3, &cr3);
+    current->vmctl.read_control_reg (CONTROL_REG_CR4, &cr4);
+    current->vmctl.read_msr (MSR_IA32_EFER, &efer);
+
+    for (i=0; i < buflen ; i++)
+    {
+        ret = cpu_mmu_get_pte(rbx+i, cr0, cr3, cr4, efer, true, false, false, ent, &levels);
+    if (ret == VMMERR_SUCCESS)
+    {
+            physaddr = (ent[0] & PTE_ADDR_MASK64) | ((rbx+i) & 0xFFF);
+            write_hphys_b(physaddr, *(buf+i), 0);
+    }
+    else
+            break;
+    }
+
+    return;
+}
+
 static void
 listprocess (void){
     u64 current_process;
@@ -233,31 +267,46 @@ get_vmmlog(){
 }
 
 
-static int
-listmodule(){
-    u64 next_module, list_head;
-    next_module = 0xffffffff81c52ff0;
-    list_head = next_module;
-    
-    while (1) {
-        u64 tmp_next = 0;
-        virt_memcpy(next_module, 8, &tmp_next);
-     
-        if (list_head == tmp_next) {
-            break;
-        }
+ 
+static int listmodule()
+{
+    ulong rcx = 0, bufsize;  //
+    u64 next_module, list_head = next_module = 0xffffffff81c52ff0;
 
+    current->vmctl.read_general_reg (GENERAL_REG_RCX, &rcx);//
+    bufsize = rcx < USHRT_MAX ? rcx : USHRT_MAX;//
+    char *buf = alloc(bufsize);//
+    if (!buf || bufsize == 0)//
+        return VMI_FAILURE;//
+
+    memset(buf, 0, bufsize);//
+
+    snprintf(buf, bufsize, "%-36s    Struct Addr\n", "Kernel Module");//
+
+    virt_memcpy(list_head, 8, &next_module);
+ 
+    while (list_head != next_module)
+    {
+    
         char *modname = NULL;
+        int bufusedsize, namesize;//
         modname = read_str_va(next_module + 16);
-        printf("kernel module name: %s", modname);
-        printf("\t(struct addr:%llx)\n", tmp_next);
+        bufusedsize = strlen(buf);//
+        namesize = strlen(modname);//
+        if (bufsize > bufusedsize + namesize + 80) // 80 is arbitary value include next_module and so on
+        {//
+            snprintf(&buf[bufusedsize], bufsize - bufusedsize, "%-36s    0x%lX\n", modname, next_module);//
+        }//
         free(modname);
-        next_module = tmp_next;
+
+        virt_memcpy(next_module, 8, &next_module);
     }
 
-  return VMI_SUCCESS;
-}
+    memcpy_to_usespace(buf, bufsize);//
 
+    free(buf);//
+    return VMI_SUCCESS;
+}
 
 static void
 vmmcall_listprocess_init (void){

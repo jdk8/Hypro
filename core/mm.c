@@ -2105,15 +2105,9 @@ cmpxchg_hphys_q (u64 phys, u64 *olddata, u64 data, u32 attr)
 /**********************************************************************/
 /*** accessing memory ***/
 
-extern u64 gp;
-
 static void *
 mapped_hphys_addr (u64 hphys, uint len, int flags)
 {
-	/*if (hphys == gp && (flags & MAPMEM_WRITE)) {
-		printf("addr: %llx is write protected!\n", gp);
-		return NULL;
-	}*/
 	u64 hphys_addr = HPHYS_ADDR;
 	u64 hphys_len_copy = hphys_len;
 
@@ -2267,12 +2261,11 @@ unmapmem (void *virt, uint len)
 	spinlock_unlock (&mapmem_lock);
 }
 
+ 
 void *
 mapmem (int flags, u64 physaddr, uint len)
 {
-	if (physaddr == gp && (flags & MAPMEM_WRITE)) {
-		printf("Addr: %llx is write protected! But some program tries to modify it!\n", gp);
-	}
+
 	void *r;
 	pmap_t m;
 	ulong hostcr3;

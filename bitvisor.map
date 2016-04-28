@@ -274,299 +274,299 @@ Linker script and memory map
                 0x0000000040122f1d                pmap_dump
                 0x0000000040123028                unmapmem
                 0x00000000401230fa                mapmem
-                0x0000000040123576                read_hphys_b
-                0x00000000401235cb                write_hphys_b
-                0x00000000401235f0                read_hphys_w
-                0x000000004012361a                write_hphys_w
-                0x0000000040123640                read_hphys_l
-                0x0000000040123668                write_hphys_l
-                0x000000004012368d                read_hphys_q
-                0x00000000401236b7                write_hphys_q
-                0x00000000401236de                cmpxchg_hphys_l
-                0x0000000040123721                cmpxchg_hphys_q
-                0x0000000040123766                alloc_realmodemem
-                0x0000000040123952                mapmem_hphys
-                0x000000004012396d                mapmem_gphys
-                0x0000000040123988                mm_flush_wb_cache
-                0x0000000040123fc6                mmio_access_memory
-                0x0000000040124285                mmio_access_page
-                0x000000004012435e                mmio_register
-                0x0000000040124372                mmio_register_unlocked
-                0x0000000040124386                mmio_unregister
-                0x0000000040124436                mmio_lock
-                0x000000004012446f                mmio_unlock
-                0x0000000040124614                msg_findname
-                0x0000000040124674                msg_register
-                0x0000000040124742                msg_unregister
-                0x00000000401247c0                msg_unregisterall
-                0x0000000040124846                msg_unregister2
-                0x00000000401248ff                call_read_msr
-                0x0000000040124916                call_write_msr
-                0x0000000040124ba4                load_minios
-                0x0000000040124ecb                backtrace
-                0x00000000401259a0                panic
-                0x0000000040125f35                auto_reboot
-                0x0000000040125f52                panic_test
-                0x0000000040125f75                pcpu_list_foreach
-                0x0000000040125fa5                pcpu_list_add
-                0x0000000040125ff4                pcpu_init
-                0x0000000040126ae0                vprintf
-                0x0000000040126b1e                printf
-                0x0000000040126b66                vsnprintf
-                0x0000000040126ba4                snprintf
-                0x0000000040126dbf                sys_msgsetfunc
-                0x0000000040126e61                sys_msgclose
-                0x0000000040126e79                sys_msgret
-                0x0000000040126f5f                sys_msgregister
-                0x0000000040127192                sys_msgsenddesc
-                0x000000004012793b                sys_msgsendint
-                0x0000000040127c6f                sys_newprocess
-                0x0000000040127cd2                sys_msgunregister
-                0x0000000040127d5d                sys_exitprocess
-                0x0000000040127db2                sys_msgsendbuf
-                0x0000000040127f03                sys_msgopen
-                0x0000000040127f64                process_kill
-                0x0000000040127fc8                msgsetfunc
-                0x0000000040127fd9                msgregister
-                0x0000000040127ff2                msgopen
-                0x0000000040128008                msgclose
-                0x0000000040128016                msgsendint
-                0x000000004012802d                msgsenddesc
-                0x0000000040128044                newprocess
-                0x000000004012805a                msgsendbuf
-                0x0000000040128077                msgunregister
-                0x00000000401280aa                exitprocess
-                0x00000000401280bd                msgpremapbuf
-                0x00000000401281d8                process_syscall
-                0x0000000040128276                putchar
-                0x00000000401282b7                putchar_set_func
-                0x000000004012858d                do_panic_reboot
-                0x000000004012860a                handle_init_to_bsp
-                0x0000000040128674                reboot_test
-                0x000000004012869e                savemsr_save
-                0x0000000040128702                savemsr_load
-                0x0000000040128a62                get_seg_base
-                0x0000000040128b11                get_seg_access_rights
-                0x0000000040128b2d                segment_wakeup
-                0x0000000040128b6b                segment_init_ap
-                0x0000000040128df2                serial_putDebugChar
-                0x0000000040128e00                serial_getDebugChar
-                0x0000000040128e11                serial_putchar
-                0x0000000040128e69                serial_init_iohook
-                0x0000000040128ea8                waitcycles
-                0x0000000040128ec7                usleep
-                0x0000000040128fdf                sleep_set_timer_counter
-                0x0000000040129137                vmctl_svm_init
-                0x00000000401291db                message_exitcode
-                0x0000000040129553                printexitcode
-                0x0000000040129580                svm_available
-                0x0000000040129624                svm_reset
-                0x0000000040129894                svm_vminit
-                0x0000000040129c41                svm_vmexit
-                0x0000000040129c43                svm_init
-                0x0000000040129d87                svm_enable_resume
-                0x0000000040129e8d                svm_resume
-                0x0000000040129fe2                svm_ioio
-                0x000000004012a0df                svm_extern_iopass
-                0x000000004012a238                svm_init_signal
-                0x000000004012a25e                svm_start_vm
-                0x000000004012ad30                svm_msr_update_lma
-                0x000000004012ada0                svm_read_msr
-                0x000000004012b038                svm_write_msr
-                0x000000004012b594                svm_np_init
-                0x000000004012b68a                svm_np_pagefault
-                0x000000004012b6c1                svm_np_tlbflush
-                0x000000004012b6c3                svm_np_updatecr3
-                0x000000004012b6d1                svm_np_clear_all
-                0x000000004012b767                svm_np_extern_mapsearch
-                0x000000004012b7eb                svm_np_map_1mb
-                0x000000004012b830                svm_paging_extern_flush_tlb_entry
-                0x000000004012b85a                svm_paging_map_1mb
-                0x000000004012b881                svm_paging_flush_guest_tlb
-                0x000000004012b8ba                svm_paging_init
-                0x000000004012b9cb                svm_paging_pagefault
-                0x000000004012b9fa                svm_paging_tlbflush
-                0x000000004012ba21                svm_paging_invalidate
-                0x000000004012ba52                svm_paging_npf
-                0x000000004012ba81                svm_paging_updatecr3
-                0x000000004012baaa                svm_paging_spt_setcr3
-                0x000000004012bade                svm_paging_clear_all
-                0x000000004012bb0a                svm_paging_get_gpat
-                0x000000004012bb18                svm_paging_set_gpat
-                0x000000004012bb58                svm_paging_apply_fixed_cr0
-                0x000000004012bb77                svm_paging_apply_fixed_cr4
-                0x000000004012bb96                svm_paging_pg_change
-                0x000000004012bb98                svm_paging_start
-                0x000000004012bb9e                svm_panic_dump
-                0x000000004012bc70                svm_read_general_reg
-                0x000000004012bdac                svm_write_general_reg
-                0x000000004012beb8                svm_read_control_reg
-                0x000000004012bf56                svm_write_control_reg
-                0x000000004012c02e                svm_read_sreg_sel
-                0x000000004012c0ef                svm_read_sreg_acr
-                0x000000004012c1ca                svm_read_sreg_base
-                0x000000004012c2e1                svm_read_sreg_limit
-                0x000000004012c3ed                svm_read_ip
-                0x000000004012c407                svm_write_ip
-                0x000000004012c428                svm_read_flags
-                0x000000004012c442                svm_write_flags
-                0x000000004012c459                svm_read_gdtr
-                0x000000004012c48b                svm_write_gdtr
-                0x000000004012c4af                svm_read_idtr
-                0x000000004012c4e1                svm_write_idtr
-                0x000000004012c505                svm_write_realmode_seg
-                0x000000004012c644                svm_writing_sreg
-                0x000000004012c734                int1a_TCG_StatusCheck
-                0x000000004012c801                int1a_TCG_HashLogExtendEvent
-                0x000000004012c88d                int1a_TCG_PassThroughToTPM
-                0x000000004012c919                int1a_TCG_HashLogEvent
-                0x000000004012c99c                int1a_TCG_HashAll
-                0x000000004012ca55                int1a_TCG_TSS
-                0x000000004012cae1                int1a_TCG_CompactHashLogExtendEvent
-                0x000000004012cb44                tcg_measure
-                0x000000004012ce2a                thread_gettid
-                0x000000004012ce3a                schedule
-                0x000000004012d06c                thread_new
-                0x000000004012d19b                thread_wakeup
-                0x000000004012d26a                thread_will_stop
-                0x000000004012d2e2                thread_exit
-                0x000000004012d388                thread_start1
-                0x000000004012d588                get_cpu_time
-                0x000000004012d652                get_acpi_time
-                0x000000004012d705                get_time
-                0x000000004012d8e4                timer_new
-                0x000000004012d961                timer_set
-                0x000000004012da7f                timer_free
-                0x000000004012dc89                tty_putchar
-                0x000000004012df77                ttylog_stop
-                0x000000004012df82                tty_udp_register
-                0x000000004012dfc7                tty_init_iohook
-                0x000000004012dfe0                vcpu_list_foreach
-                0x000000004012e010                load_new_vcpu
-                0x000000004012e0b8                vga_register
-                0x000000004012e12d                vga_is_ready
-                0x000000004012e180                vga_transfer_image
-                0x000000004012e1cf                vga_fill_rect
-                0x000000004012e209                vga_get_screen_size
-                0x000000004012e5a8                vmmcall_boot_continue
-                0x000000004012e5f6                vmmcall_boot_enable
-                0x000000004012e744                vmmcall
-                0x000000004012e79c                vmmcall_register
-                0x000000004012e7d9                vmmcall_init
-                0x000000004012ecad                virt_to_phys
-                0x000000004012f057                register_status_callback
-                0x000000004012f324                htoi
-                0x000000004012f369                atoi
-                0x000000004012f39d                vmi_translate_ksym2v
-                0x000000004012f3c7                virt_memcpy
-                0x000000004012f4f7                read_str_va
-                0x000000004012f952                vramwrite_clearscreen
-                0x000000004012f9af                vramwrite_putchar
-                0x000000004012fb6c                vramwrite_mark1
-                0x000000004012fba4                vramwrite_mark2
-                0x000000004012fbe5                vramwrite_mark3
-                0x000000004012fc26                vramwrite_save_and_move_cursor
-                0x000000004012fc54                vramwrite_restore_cursor
-                0x000000004012fc62                vramwrite_get_cursor_pos
-                0x000000004012fca8                vramwrite_init_global
-                0x000000004012fcb0                vramwrite_exit_global
-                0x000000004012fd3b                vt_generate_pagefault
-                0x000000004012fdc4                vt_generate_external_int
-                0x000000004012fe19                vmctl_vt_init
-                0x000000004012febd                vt_update_exint
-                0x000000004012ff3d                vt_vmptrld
-                0x0000000040130239                vt_ept_init
-                0x000000004013032d                vt_ept_violation
-                0x0000000040130364                vt_ept_tlbflush
-                0x0000000040130366                vt_ept_updatecr3
-                0x0000000040130422                vt_ept_clear_all
-                0x00000000401304b8                vt_ept_extern_mapsearch
-                0x000000004013053c                vt_ept_map_1mb
-                0x0000000040130581                message_exitreason
-                0x0000000040130680                printexitreason
-                0x0000000040130fec                vt_available
-                0x0000000040131088                vt__vmx_init
-                0x00000000401310d0                vt__vmxon
-                0x0000000040131178                vt_vminit
-                0x00000000401311d7                vt_vmexit
-                0x00000000401311f4                vt_init
-                0x0000000040131207                vt_enable_resume
-                0x0000000040131343                vt_resume
-                0x00000000401314cf                vt_io
-                0x00000000401315f3                vt_iopass_init
-                0x000000004013176b                vt_iopass
-                0x00000000401317ad                vt_extern_iopass
-                0x000000004013247a                vt_update_exception_bmp
-                0x0000000040132a84                vt_init_signal
-                0x0000000040132a92                vt_start_vm
-                0x0000000040132e65                vt_add_guest_msr
-                0x0000000040132fb9                vt_read_guest_msr
-                0x0000000040133016                vt_write_guest_msr
-                0x0000000040133070                vt_msr_update_lma
-                0x0000000040133125                vt_read_msr
-                0x00000000401333bc                vt_write_msr
-                0x000000004013365f                vt_msr_init
-                0x000000004013382f                vt_paging_extern_flush_tlb_entry
-                0x0000000040133884                vt_paging_map_1mb
-                0x00000000401338aa                vt_paging_flush_guest_tlb
-                0x000000004013390b                vt_paging_pagefault
-                0x0000000040133941                vt_paging_tlbflush
-                0x0000000040133961                vt_paging_invalidate
-                0x0000000040133987                vt_paging_npf
-                0x00000000401339bd                vt_paging_updatecr3
-                0x00000000401339f1                vt_paging_spt_setcr3
-                0x0000000040133a17                vt_paging_clear_all
-                0x0000000040133a4d                vt_paging_get_gpat
-                0x0000000040133a5b                vt_paging_set_gpat
-                0x0000000040133aa3                vt_paging_apply_fixed_cr0
-                0x0000000040133b06                vt_paging_apply_fixed_cr4
-                0x0000000040133b49                vt_paging_pg_change
-                0x0000000040133cbb                vt_paging_init
-                0x0000000040133d0a                vt_paging_start
-                0x0000000040133d2b                vt_panic_dump
-                0x0000000040133ee0                vt_read_general_reg
-                0x0000000040134001                vt_write_general_reg
-                0x00000000401340f5                vt_read_control_reg
-                0x0000000040134166                vt_read_sreg_sel
-                0x000000004013426f                vt_read_sreg_acr
-                0x00000000401342c6                vt_read_sreg_base
-                0x0000000040134348                vt_read_sreg_limit
-                0x00000000401343c5                vt_read_ip
-                0x00000000401343ce                vt_write_ip
-                0x00000000401343e9                vt_read_flags
-                0x000000004013440b                vt_write_flags
-                0x0000000040134431                vt_read_gdtr
-                0x0000000040134441                vt_write_gdtr
-                0x0000000040134451                vt_read_idtr
-                0x000000004013448f                vt_write_idtr
-                0x00000000401344bf                vt_write_control_reg
-                0x00000000401349a6                vt_get_current_regs_in_vmcs
-                0x0000000040134c54                vt_get_vmcs_regs_in_vmcs
-                0x0000000040134dcc                vt_write_realmode_seg
-                0x0000000040134f18                vt_writing_sreg
-                0x0000000040134fa4                vt_reset
-                0x000000004013528a                prepare_for_sleep
-                0x000000004013534c                cancel_sleep
-                0x0000000040135371                wakeup_main
-                0x00000000401353fc                wakeup_cont
-                0x000000004013553f                wakeup_init
-                0x0000000040135586                call_xsetbv
-                0x0000000040135610                mpumul_64_64
-                0x0000000040135630                mpudiv_128_32
-                0x0000000040135650                ipchecksum
-                0x00000000401356e0                asm_vmlaunch_regs_32
-                0x0000000040135760                asm_vmresume_regs_32
-                0x00000000401357e0                asm_vmrun_regs_32
-                0x0000000040135840                asm_vmlaunch_regs_64
-                0x0000000040135920                asm_vmresume_regs_64
-                0x0000000040135a00                asm_vmrun_regs_64
-                0x0000000040135aa4                callrealmode_start
-                0x0000000040135aba                callrealmode_start2
-                0x0000000040135f46                move_vmm_area32
-                0x0000000040135f46                callrealmode_end
-                0x0000000040135f6b                move_vmm_area64
-                0x0000000040135f98                int_handler
-                0x0000000040136010                int_callfunc
+                0x0000000040123555                read_hphys_b
+                0x00000000401235aa                write_hphys_b
+                0x00000000401235cf                read_hphys_w
+                0x00000000401235f9                write_hphys_w
+                0x000000004012361f                read_hphys_l
+                0x0000000040123647                write_hphys_l
+                0x000000004012366c                read_hphys_q
+                0x0000000040123696                write_hphys_q
+                0x00000000401236bd                cmpxchg_hphys_l
+                0x0000000040123700                cmpxchg_hphys_q
+                0x0000000040123745                alloc_realmodemem
+                0x0000000040123931                mapmem_hphys
+                0x000000004012394c                mapmem_gphys
+                0x0000000040123967                mm_flush_wb_cache
+                0x0000000040123fa6                mmio_access_memory
+                0x0000000040124265                mmio_access_page
+                0x000000004012433e                mmio_register
+                0x0000000040124352                mmio_register_unlocked
+                0x0000000040124366                mmio_unregister
+                0x0000000040124416                mmio_lock
+                0x000000004012444f                mmio_unlock
+                0x00000000401245f4                msg_findname
+                0x0000000040124654                msg_register
+                0x0000000040124722                msg_unregister
+                0x00000000401247a0                msg_unregisterall
+                0x0000000040124826                msg_unregister2
+                0x00000000401248df                call_read_msr
+                0x00000000401248f6                call_write_msr
+                0x0000000040124b84                load_minios
+                0x0000000040124eab                backtrace
+                0x0000000040125980                panic
+                0x0000000040125f15                auto_reboot
+                0x0000000040125f32                panic_test
+                0x0000000040125f55                pcpu_list_foreach
+                0x0000000040125f85                pcpu_list_add
+                0x0000000040125fd4                pcpu_init
+                0x0000000040126ac0                vprintf
+                0x0000000040126afe                printf
+                0x0000000040126b46                vsnprintf
+                0x0000000040126b84                snprintf
+                0x0000000040126d9f                sys_msgsetfunc
+                0x0000000040126e41                sys_msgclose
+                0x0000000040126e59                sys_msgret
+                0x0000000040126f3f                sys_msgregister
+                0x0000000040127172                sys_msgsenddesc
+                0x000000004012791b                sys_msgsendint
+                0x0000000040127c4f                sys_newprocess
+                0x0000000040127cb2                sys_msgunregister
+                0x0000000040127d3d                sys_exitprocess
+                0x0000000040127d92                sys_msgsendbuf
+                0x0000000040127ee3                sys_msgopen
+                0x0000000040127f44                process_kill
+                0x0000000040127fa8                msgsetfunc
+                0x0000000040127fb9                msgregister
+                0x0000000040127fd2                msgopen
+                0x0000000040127fe8                msgclose
+                0x0000000040127ff6                msgsendint
+                0x000000004012800d                msgsenddesc
+                0x0000000040128024                newprocess
+                0x000000004012803a                msgsendbuf
+                0x0000000040128057                msgunregister
+                0x000000004012808a                exitprocess
+                0x000000004012809d                msgpremapbuf
+                0x00000000401281b8                process_syscall
+                0x0000000040128256                putchar
+                0x0000000040128297                putchar_set_func
+                0x000000004012856d                do_panic_reboot
+                0x00000000401285ea                handle_init_to_bsp
+                0x0000000040128654                reboot_test
+                0x000000004012867e                savemsr_save
+                0x00000000401286e2                savemsr_load
+                0x0000000040128a42                get_seg_base
+                0x0000000040128af1                get_seg_access_rights
+                0x0000000040128b0d                segment_wakeup
+                0x0000000040128b4b                segment_init_ap
+                0x0000000040128dd2                serial_putDebugChar
+                0x0000000040128de0                serial_getDebugChar
+                0x0000000040128df1                serial_putchar
+                0x0000000040128e49                serial_init_iohook
+                0x0000000040128e88                waitcycles
+                0x0000000040128ea7                usleep
+                0x0000000040128fbf                sleep_set_timer_counter
+                0x0000000040129117                vmctl_svm_init
+                0x00000000401291bb                message_exitcode
+                0x0000000040129533                printexitcode
+                0x0000000040129560                svm_available
+                0x0000000040129604                svm_reset
+                0x0000000040129874                svm_vminit
+                0x0000000040129c21                svm_vmexit
+                0x0000000040129c23                svm_init
+                0x0000000040129d67                svm_enable_resume
+                0x0000000040129e6d                svm_resume
+                0x0000000040129fc2                svm_ioio
+                0x000000004012a0bf                svm_extern_iopass
+                0x000000004012a218                svm_init_signal
+                0x000000004012a23e                svm_start_vm
+                0x000000004012ad10                svm_msr_update_lma
+                0x000000004012ad80                svm_read_msr
+                0x000000004012b018                svm_write_msr
+                0x000000004012b574                svm_np_init
+                0x000000004012b66a                svm_np_pagefault
+                0x000000004012b6a1                svm_np_tlbflush
+                0x000000004012b6a3                svm_np_updatecr3
+                0x000000004012b6b1                svm_np_clear_all
+                0x000000004012b747                svm_np_extern_mapsearch
+                0x000000004012b7cb                svm_np_map_1mb
+                0x000000004012b810                svm_paging_extern_flush_tlb_entry
+                0x000000004012b83a                svm_paging_map_1mb
+                0x000000004012b861                svm_paging_flush_guest_tlb
+                0x000000004012b89a                svm_paging_init
+                0x000000004012b9ab                svm_paging_pagefault
+                0x000000004012b9da                svm_paging_tlbflush
+                0x000000004012ba01                svm_paging_invalidate
+                0x000000004012ba32                svm_paging_npf
+                0x000000004012ba61                svm_paging_updatecr3
+                0x000000004012ba8a                svm_paging_spt_setcr3
+                0x000000004012babe                svm_paging_clear_all
+                0x000000004012baea                svm_paging_get_gpat
+                0x000000004012baf8                svm_paging_set_gpat
+                0x000000004012bb38                svm_paging_apply_fixed_cr0
+                0x000000004012bb57                svm_paging_apply_fixed_cr4
+                0x000000004012bb76                svm_paging_pg_change
+                0x000000004012bb78                svm_paging_start
+                0x000000004012bb7e                svm_panic_dump
+                0x000000004012bc50                svm_read_general_reg
+                0x000000004012bd8c                svm_write_general_reg
+                0x000000004012be98                svm_read_control_reg
+                0x000000004012bf36                svm_write_control_reg
+                0x000000004012c00e                svm_read_sreg_sel
+                0x000000004012c0cf                svm_read_sreg_acr
+                0x000000004012c1aa                svm_read_sreg_base
+                0x000000004012c2c1                svm_read_sreg_limit
+                0x000000004012c3cd                svm_read_ip
+                0x000000004012c3e7                svm_write_ip
+                0x000000004012c408                svm_read_flags
+                0x000000004012c422                svm_write_flags
+                0x000000004012c439                svm_read_gdtr
+                0x000000004012c46b                svm_write_gdtr
+                0x000000004012c48f                svm_read_idtr
+                0x000000004012c4c1                svm_write_idtr
+                0x000000004012c4e5                svm_write_realmode_seg
+                0x000000004012c624                svm_writing_sreg
+                0x000000004012c714                int1a_TCG_StatusCheck
+                0x000000004012c7e1                int1a_TCG_HashLogExtendEvent
+                0x000000004012c86d                int1a_TCG_PassThroughToTPM
+                0x000000004012c8f9                int1a_TCG_HashLogEvent
+                0x000000004012c97c                int1a_TCG_HashAll
+                0x000000004012ca35                int1a_TCG_TSS
+                0x000000004012cac1                int1a_TCG_CompactHashLogExtendEvent
+                0x000000004012cb24                tcg_measure
+                0x000000004012ce0a                thread_gettid
+                0x000000004012ce1a                schedule
+                0x000000004012d04c                thread_new
+                0x000000004012d17b                thread_wakeup
+                0x000000004012d24a                thread_will_stop
+                0x000000004012d2c2                thread_exit
+                0x000000004012d368                thread_start1
+                0x000000004012d568                get_cpu_time
+                0x000000004012d632                get_acpi_time
+                0x000000004012d6e5                get_time
+                0x000000004012d8c4                timer_new
+                0x000000004012d941                timer_set
+                0x000000004012da5f                timer_free
+                0x000000004012dc69                tty_putchar
+                0x000000004012df57                ttylog_stop
+                0x000000004012df62                tty_udp_register
+                0x000000004012dfa7                tty_init_iohook
+                0x000000004012dfc0                vcpu_list_foreach
+                0x000000004012dff0                load_new_vcpu
+                0x000000004012e098                vga_register
+                0x000000004012e10d                vga_is_ready
+                0x000000004012e160                vga_transfer_image
+                0x000000004012e1af                vga_fill_rect
+                0x000000004012e1e9                vga_get_screen_size
+                0x000000004012e588                vmmcall_boot_continue
+                0x000000004012e5d6                vmmcall_boot_enable
+                0x000000004012e724                vmmcall
+                0x000000004012e77c                vmmcall_register
+                0x000000004012e7b9                vmmcall_init
+                0x000000004012eb86                virt_to_phys
+                0x000000004012ef59                register_status_callback
+                0x000000004012f226                htoi
+                0x000000004012f26b                atoi
+                0x000000004012f29f                vmi_translate_ksym2v
+                0x000000004012f2c9                virt_memcpy
+                0x000000004012f3f9                read_str_va
+                0x000000004012fa9a                vramwrite_clearscreen
+                0x000000004012faf7                vramwrite_putchar
+                0x000000004012fcb4                vramwrite_mark1
+                0x000000004012fcec                vramwrite_mark2
+                0x000000004012fd2d                vramwrite_mark3
+                0x000000004012fd6e                vramwrite_save_and_move_cursor
+                0x000000004012fd9c                vramwrite_restore_cursor
+                0x000000004012fdaa                vramwrite_get_cursor_pos
+                0x000000004012fdf0                vramwrite_init_global
+                0x000000004012fdf8                vramwrite_exit_global
+                0x000000004012fe83                vt_generate_pagefault
+                0x000000004012ff0c                vt_generate_external_int
+                0x000000004012ff61                vmctl_vt_init
+                0x0000000040130005                vt_update_exint
+                0x0000000040130085                vt_vmptrld
+                0x0000000040130389                vt_ept_init
+                0x000000004013047d                vt_ept_violation
+                0x00000000401304b4                vt_ept_tlbflush
+                0x00000000401304b6                vt_ept_updatecr3
+                0x0000000040130572                vt_ept_clear_all
+                0x0000000040130608                vt_ept_extern_mapsearch
+                0x000000004013068c                vt_ept_map_1mb
+                0x00000000401306d1                message_exitreason
+                0x00000000401307d0                printexitreason
+                0x000000004013113c                vt_available
+                0x00000000401311d8                vt__vmx_init
+                0x0000000040131220                vt__vmxon
+                0x00000000401312c8                vt_vminit
+                0x0000000040131327                vt_vmexit
+                0x0000000040131344                vt_init
+                0x0000000040131357                vt_enable_resume
+                0x0000000040131493                vt_resume
+                0x000000004013161f                vt_io
+                0x0000000040131743                vt_iopass_init
+                0x00000000401318bb                vt_iopass
+                0x00000000401318fd                vt_extern_iopass
+                0x00000000401325ca                vt_update_exception_bmp
+                0x0000000040132bd4                vt_init_signal
+                0x0000000040132be2                vt_start_vm
+                0x0000000040132fb5                vt_add_guest_msr
+                0x0000000040133109                vt_read_guest_msr
+                0x0000000040133166                vt_write_guest_msr
+                0x00000000401331c0                vt_msr_update_lma
+                0x0000000040133275                vt_read_msr
+                0x000000004013350c                vt_write_msr
+                0x00000000401337af                vt_msr_init
+                0x000000004013397f                vt_paging_extern_flush_tlb_entry
+                0x00000000401339d4                vt_paging_map_1mb
+                0x00000000401339fa                vt_paging_flush_guest_tlb
+                0x0000000040133a5b                vt_paging_pagefault
+                0x0000000040133a91                vt_paging_tlbflush
+                0x0000000040133ab1                vt_paging_invalidate
+                0x0000000040133ad7                vt_paging_npf
+                0x0000000040133b0d                vt_paging_updatecr3
+                0x0000000040133b41                vt_paging_spt_setcr3
+                0x0000000040133b67                vt_paging_clear_all
+                0x0000000040133b9d                vt_paging_get_gpat
+                0x0000000040133bab                vt_paging_set_gpat
+                0x0000000040133bf3                vt_paging_apply_fixed_cr0
+                0x0000000040133c56                vt_paging_apply_fixed_cr4
+                0x0000000040133c99                vt_paging_pg_change
+                0x0000000040133e0b                vt_paging_init
+                0x0000000040133e5a                vt_paging_start
+                0x0000000040133e7b                vt_panic_dump
+                0x0000000040134030                vt_read_general_reg
+                0x0000000040134151                vt_write_general_reg
+                0x0000000040134245                vt_read_control_reg
+                0x00000000401342b6                vt_read_sreg_sel
+                0x00000000401343bf                vt_read_sreg_acr
+                0x0000000040134416                vt_read_sreg_base
+                0x0000000040134498                vt_read_sreg_limit
+                0x0000000040134515                vt_read_ip
+                0x000000004013451e                vt_write_ip
+                0x0000000040134539                vt_read_flags
+                0x000000004013455b                vt_write_flags
+                0x0000000040134581                vt_read_gdtr
+                0x0000000040134591                vt_write_gdtr
+                0x00000000401345a1                vt_read_idtr
+                0x00000000401345df                vt_write_idtr
+                0x000000004013460f                vt_write_control_reg
+                0x0000000040134af6                vt_get_current_regs_in_vmcs
+                0x0000000040134da4                vt_get_vmcs_regs_in_vmcs
+                0x0000000040134f1c                vt_write_realmode_seg
+                0x0000000040135068                vt_writing_sreg
+                0x00000000401350f4                vt_reset
+                0x00000000401353da                prepare_for_sleep
+                0x000000004013549c                cancel_sleep
+                0x00000000401354c1                wakeup_main
+                0x000000004013554c                wakeup_cont
+                0x000000004013568f                wakeup_init
+                0x00000000401356d6                call_xsetbv
+                0x0000000040135760                mpumul_64_64
+                0x0000000040135780                mpudiv_128_32
+                0x00000000401357a0                ipchecksum
+                0x0000000040135830                asm_vmlaunch_regs_32
+                0x00000000401358b0                asm_vmresume_regs_32
+                0x0000000040135930                asm_vmrun_regs_32
+                0x0000000040135990                asm_vmlaunch_regs_64
+                0x0000000040135a70                asm_vmresume_regs_64
+                0x0000000040135b50                asm_vmrun_regs_64
+                0x0000000040135bf4                callrealmode_start
+                0x0000000040135c0a                callrealmode_start2
+                0x0000000040136096                move_vmm_area32
+                0x0000000040136096                callrealmode_end
+                0x00000000401360bb                move_vmm_area64
+                0x00000000401360e8                int_handler
+                0x0000000040136160                int_callfunc
                 0x0000000040137000                syscall_entry_sysexit
                 0x000000004013702c                syscall_entry_lret
                 0x000000004013705c                ret_to_user32
@@ -4652,43 +4652,42 @@ Linker script and memory map
                 0x0000000040245540                v3_crl_num
                 0x00000000402455c0                CONF_def_version
 
-.rodata.str1.8  0x00000000402455f0     0x9840 load address 0x00000000002455f0
+.rodata.str1.8  0x00000000402455f0     0x9828 load address 0x00000000002455f0
  .rodata.str1.8
-                0x00000000402455f0     0x9840 output.o
-                                       0x9b6d (size before relaxing)
+                0x00000000402455f0     0x9828 output.o
+                                       0x9b55 (size before relaxing)
 
-.rodata.str1.1  0x000000004024ee30    0x126e2 load address 0x000000000024ee30
+.rodata.str1.1  0x000000004024ee18    0x126e5 load address 0x000000000024ee18
  .rodata.str1.1
-                0x000000004024ee30    0x126e2 output.o
-                                      0x14acd (size before relaxing)
+                0x000000004024ee18    0x126e5 output.o
+                                      0x14ac4 (size before relaxing)
 
-.eh_frame       0x0000000040261518    0x37b00 load address 0x0000000000261518
- .eh_frame      0x0000000040261518    0x37b00 output.o
+.eh_frame       0x0000000040261500    0x37b20 load address 0x0000000000261500
+ .eh_frame      0x0000000040261500    0x37b20 output.o
 
-.eh_frame_hdr   0x0000000040299018        0x8 load address 0x0000000000299018
- .eh_frame_hdr  0x0000000040299018        0x8 output.o
+.eh_frame_hdr   0x0000000040299020        0x8 load address 0x0000000000299020
+ .eh_frame_hdr  0x0000000040299020        0x8 output.o
 
 .note.gnu.build-id
-                0x0000000040299020      0x288 load address 0x0000000000299020
+                0x0000000040299028      0x288 load address 0x0000000000299028
  .note.gnu.build-id
-                0x0000000040299020      0x288 output.o
+                0x0000000040299028      0x288 output.o
 
-.rela.dyn       0x00000000402992a8        0x0 load address 0x00000000002992a8
+.rela.dyn       0x00000000402992b0        0x0 load address 0x00000000002992b0
  .rela.iplt     0x0000000000000000        0x0 output.o
  .rela.text     0x0000000000000000        0x0 output.o
  .rela.entry.text
                 0x0000000000000000        0x0 output.o
 
-.data           0x000000004029a000   0xb55e30 load address 0x000000000029a000
+.data           0x000000004029a000   0xb55ec0 load address 0x000000000029a000
                 0x000000004029a000                data = .
  *(.data)
- .data          0x000000004029a000   0xb555cf output.o
+ .data          0x000000004029a000   0xb5564f output.o
                 0x000000004029a008                uefi_memory_map_size
                 0x000000004029a020                config
                 0x00000000402aa210                vmm_start_phys
                 0x00000000402aa214                use_pae
                 0x00000000402aa430                savemsr_index
-                0x00000000402aa5b0                gp
                 0x00000000402af000                calluefi
                 0x00000000402af20c                calluefi_uefi_gdtr
                 0x00000000402af21c                calluefi_uefi_idtr
@@ -4721,186 +4720,187 @@ Linker script and memory map
                 0x00000000402b2160                DI
                 0x00000000402b67a0                default_pctx
                 0x00000000402b9a20                rand_ssleay_meth
-                0x0000000040def5d0                . = ALIGN (0x8)
- *fill*         0x0000000040def5cf        0x1 
-                0x0000000040def5d0                __initfunc_start = .
+                0x0000000040def650                . = ALIGN (0x8)
+ *fill*         0x0000000040def64f        0x1 
+                0x0000000040def650                __initfunc_start = .
  *(.initfunc)
- .initfunc      0x0000000040def5d0      0x6c0 output.o
-                0x0000000040def5d0                __initfunc_acpi_init_paral
-                0x0000000040def5e0                __initfunc_acpi_init_global
-                0x0000000040def5f0                __initfunc_beep_init_msg
-                0x0000000040def600                __initfunc_cache_init_pass
-                0x0000000040def610                __initfunc_cache_init_vcpu
-                0x0000000040def620                __initfunc_update_mtrr_and_pat
-                0x0000000040def630                __initfunc_cache_init_pcpu
-                0x0000000040def640                __initfunc_callrealmode_panic
-                0x0000000040def650                __initfunc_callrealmode_init_global
-                0x0000000040def660                __initfunc_cpuid_init
-                0x0000000040def670                __initfunc_cpuid_pass_init
-                0x0000000040def680                __initfunc_cpu_mmu_spt_init_pcpu
-                0x0000000040def690                __initfunc_cpu_mmu_spt_init_global
-                0x0000000040def6a0                __initfunc_exint_pass_init
-                0x0000000040def6b0                __initfunc_gmm_pass_init
-                0x0000000040def6c0                __initfunc_install_int0x15_hook
-                0x0000000040def6d0                __initfunc_idman_init
-                0x0000000040def6e0                __initfunc_idman_init_global
-                0x0000000040def6f0                __initfunc_int_wakeup
-                0x0000000040def700                __initfunc_int_init_global
-                0x0000000040def710                __initfunc_io_io_init
-                0x0000000040def720                __initfunc_setiohooks
-                0x0000000040def730                __initfunc_io_iopass_init
-                0x0000000040def740                __initfunc_keyboard_init_msg
-                0x0000000040def750                __initfunc_localapic_init2
-                0x0000000040def760                __initfunc_localapic_init
-                0x0000000040def770                __initfunc_get_shiftflags
-                0x0000000040def780                __initfunc_copy_minios
-                0x0000000040def790                __initfunc_print_boot_msg
-                0x0000000040def7a0                __initfunc_debug_on_shift_key
-                0x0000000040def7b0                __initfunc_wait_for_create_pass_vm
-                0x0000000040def7c0                __initfunc_create_pass_vm
-                0x0000000040def7d0                __initfunc_virtualization_init_pcpu
-                0x0000000040def7e0                __initfunc_unmap_user_area
-                0x0000000040def7f0                __initfunc_mm_init_global
-                0x0000000040def800                __initfunc_mmio_debug
-                0x0000000040def810                __initfunc_mmio_init
-                0x0000000040def820                __initfunc_msg_init_global
-                0x0000000040def830                __initfunc_msr_init
-                0x0000000040def840                __initfunc_msr_pass_init
-                0x0000000040def850                __initfunc_nmi_pass_init_pcpu
-                0x0000000040def860                __initfunc_nmi_pass_init
-                0x0000000040def870                __initfunc_panic_init_pcpu
-                0x0000000040def880                __initfunc_panic_init_msg
-                0x0000000040def890                __initfunc_panic_init_global3
-                0x0000000040def8a0                __initfunc_panic_init_global
-                0x0000000040def8b0                __initfunc_printf_init_global
-                0x0000000040def8c0                __initfunc_process_wakeup
-                0x0000000040def8d0                __initfunc_process_init_ap
-                0x0000000040def8e0                __initfunc_process_init_global
-                0x0000000040def8f0                __initfunc_random_init_config0
-                0x0000000040def900                __initfunc_random_init_global
-                0x0000000040def910                __initfunc_reboot_init_msg
-                0x0000000040def920                __initfunc_segment_init_global
-                0x0000000040def930                __initfunc_serial_init_msg
-                0x0000000040def940                __initfunc_sleep_init_msg
-                0x0000000040def950                __initfunc_sleep_init_global
-                0x0000000040def960                __initfunc_svm_panic
-                0x0000000040def970                __initfunc_sx_init_pass_init
-                0x0000000040def980                __initfunc_thread_init_pcpu
-                0x0000000040def990                __initfunc_thread_init_global
-                0x0000000040def9a0                __initfunc_time_wakeup
-                0x0000000040def9b0                __initfunc_time_init_msg
-                0x0000000040def9c0                __initfunc_time_init_dbsp
-                0x0000000040def9d0                __initfunc_time_init_pcpu
-                0x0000000040def9e0                __initfunc_time_init_global_status
-                0x0000000040def9f0                __initfunc_time_init_global
-                0x0000000040defa00                __initfunc_timer_init_global
-                0x0000000040defa10                __initfunc_tty_init_msg
-                0x0000000040defa20                __initfunc_tty_init_global2
-                0x0000000040defa30                __initfunc_tty_init_global
-                0x0000000040defa40                __initfunc_vcpu_init_global
-                0x0000000040defa50                __initfunc_vga_init
-                0x0000000040defa60                __initfunc_vmmcall_boot_init
-                0x0000000040defa70                __initfunc_vmmcall_init
-                0x0000000040defa80                __initfunc_vmmcall_dbgsh_init_pcpu
-                0x0000000040defa90                __initfunc_vmmcall_dbgsh_init_global
-                0x0000000040defaa0                __initfunc_vmmcall_dbgsh_init
-                0x0000000040defab0                __initfunc_vmmcall_memory_event_init
-                0x0000000040defac0                __initfunc_vmmcall_iccard_init
-                0x0000000040defad0                __initfunc_vmmcall_status_init
-                0x0000000040defae0                __initfunc_vmmcall_status_init_global
-                0x0000000040defaf0                __initfunc_vmmcall_listmodule_init
-                0x0000000040defb00                __initfunc_vmmcall_dump_memory_init
-                0x0000000040defb10                __initfunc_vmmcall_printlog_init
-                0x0000000040defb20                __initfunc_vmmcall_listprocess_init
-                0x0000000040defb30                __initfunc_vramwrite_init_bsp
-                0x0000000040defb40                __initfunc_vramwrite_init_msg
-                0x0000000040defb50                __initfunc_vt_register_status_callback
-                0x0000000040defb60                __initfunc_vt_panic
-                0x0000000040defb70                __initfunc_xsetbv_init
-                0x0000000040defb80                __initfunc_xsetbv_pass_init
-                0x0000000040defb90                __initfunc_core_init
-                0x0000000040defba0                __initfunc_ieee1394_init_boot
-                0x0000000040defbb0                __initfunc_ieee1394_init
-                0x0000000040defbc0                __initfunc_iommu_setup
-                0x0000000040defbd0                __initfunc_pci_init
-                0x0000000040defbe0                __initfunc_ata_init
-                0x0000000040defbf0                __initfunc_uhci_init
-                0x0000000040defc00                __initfunc_ehci_init
-                0x0000000040defc10                __initfunc_pro100_init
-                0x0000000040defc20                __initfunc_suspend_pro1000
-                0x0000000040defc30                __initfunc_resume_pro1000
-                0x0000000040defc40                __initfunc_vpn_pro1000_init
-                0x0000000040defc50                __initfunc_storage_kernel_init
-                0x0000000040defc60                __initfunc_storage_io_initfunc
-                0x0000000040defc70                __initfunc_vpn_kernel_init
-                0x0000000040defc80                __initfunc_idman_kernel_init
-                0x0000000040defc90                __initfunc_end = .
-                0x0000000040defc90                __process_builtin = .
+ .initfunc      0x0000000040def650      0x6d0 output.o
+                0x0000000040def650                __initfunc_acpi_init_paral
+                0x0000000040def660                __initfunc_acpi_init_global
+                0x0000000040def670                __initfunc_beep_init_msg
+                0x0000000040def680                __initfunc_cache_init_pass
+                0x0000000040def690                __initfunc_cache_init_vcpu
+                0x0000000040def6a0                __initfunc_update_mtrr_and_pat
+                0x0000000040def6b0                __initfunc_cache_init_pcpu
+                0x0000000040def6c0                __initfunc_callrealmode_panic
+                0x0000000040def6d0                __initfunc_callrealmode_init_global
+                0x0000000040def6e0                __initfunc_cpuid_init
+                0x0000000040def6f0                __initfunc_cpuid_pass_init
+                0x0000000040def700                __initfunc_cpu_mmu_spt_init_pcpu
+                0x0000000040def710                __initfunc_cpu_mmu_spt_init_global
+                0x0000000040def720                __initfunc_exint_pass_init
+                0x0000000040def730                __initfunc_gmm_pass_init
+                0x0000000040def740                __initfunc_install_int0x15_hook
+                0x0000000040def750                __initfunc_idman_init
+                0x0000000040def760                __initfunc_idman_init_global
+                0x0000000040def770                __initfunc_int_wakeup
+                0x0000000040def780                __initfunc_int_init_global
+                0x0000000040def790                __initfunc_io_io_init
+                0x0000000040def7a0                __initfunc_setiohooks
+                0x0000000040def7b0                __initfunc_io_iopass_init
+                0x0000000040def7c0                __initfunc_keyboard_init_msg
+                0x0000000040def7d0                __initfunc_localapic_init2
+                0x0000000040def7e0                __initfunc_localapic_init
+                0x0000000040def7f0                __initfunc_get_shiftflags
+                0x0000000040def800                __initfunc_copy_minios
+                0x0000000040def810                __initfunc_print_boot_msg
+                0x0000000040def820                __initfunc_debug_on_shift_key
+                0x0000000040def830                __initfunc_wait_for_create_pass_vm
+                0x0000000040def840                __initfunc_create_pass_vm
+                0x0000000040def850                __initfunc_virtualization_init_pcpu
+                0x0000000040def860                __initfunc_unmap_user_area
+                0x0000000040def870                __initfunc_mm_init_global
+                0x0000000040def880                __initfunc_mmio_debug
+                0x0000000040def890                __initfunc_mmio_init
+                0x0000000040def8a0                __initfunc_msg_init_global
+                0x0000000040def8b0                __initfunc_msr_init
+                0x0000000040def8c0                __initfunc_msr_pass_init
+                0x0000000040def8d0                __initfunc_nmi_pass_init_pcpu
+                0x0000000040def8e0                __initfunc_nmi_pass_init
+                0x0000000040def8f0                __initfunc_panic_init_pcpu
+                0x0000000040def900                __initfunc_panic_init_msg
+                0x0000000040def910                __initfunc_panic_init_global3
+                0x0000000040def920                __initfunc_panic_init_global
+                0x0000000040def930                __initfunc_printf_init_global
+                0x0000000040def940                __initfunc_process_wakeup
+                0x0000000040def950                __initfunc_process_init_ap
+                0x0000000040def960                __initfunc_process_init_global
+                0x0000000040def970                __initfunc_random_init_config0
+                0x0000000040def980                __initfunc_random_init_global
+                0x0000000040def990                __initfunc_reboot_init_msg
+                0x0000000040def9a0                __initfunc_segment_init_global
+                0x0000000040def9b0                __initfunc_serial_init_msg
+                0x0000000040def9c0                __initfunc_sleep_init_msg
+                0x0000000040def9d0                __initfunc_sleep_init_global
+                0x0000000040def9e0                __initfunc_svm_panic
+                0x0000000040def9f0                __initfunc_sx_init_pass_init
+                0x0000000040defa00                __initfunc_thread_init_pcpu
+                0x0000000040defa10                __initfunc_thread_init_global
+                0x0000000040defa20                __initfunc_time_wakeup
+                0x0000000040defa30                __initfunc_time_init_msg
+                0x0000000040defa40                __initfunc_time_init_dbsp
+                0x0000000040defa50                __initfunc_time_init_pcpu
+                0x0000000040defa60                __initfunc_time_init_global_status
+                0x0000000040defa70                __initfunc_time_init_global
+                0x0000000040defa80                __initfunc_timer_init_global
+                0x0000000040defa90                __initfunc_tty_init_msg
+                0x0000000040defaa0                __initfunc_tty_init_global2
+                0x0000000040defab0                __initfunc_tty_init_global
+                0x0000000040defac0                __initfunc_vcpu_init_global
+                0x0000000040defad0                __initfunc_vga_init
+                0x0000000040defae0                __initfunc_vmmcall_boot_init
+                0x0000000040defaf0                __initfunc_vmmcall_init
+                0x0000000040defb00                __initfunc_vmmcall_dbgsh_init_pcpu
+                0x0000000040defb10                __initfunc_vmmcall_dbgsh_init_global
+                0x0000000040defb20                __initfunc_vmmcall_dbgsh_init
+                0x0000000040defb30                __initfunc_vmmcall_memory_event1_init
+                0x0000000040defb40                __initfunc_vmmcall_memory_event_init
+                0x0000000040defb50                __initfunc_vmmcall_iccard_init
+                0x0000000040defb60                __initfunc_vmmcall_status_init
+                0x0000000040defb70                __initfunc_vmmcall_status_init_global
+                0x0000000040defb80                __initfunc_vmmcall_listmodule_init
+                0x0000000040defb90                __initfunc_vmmcall_dump_memory_init
+                0x0000000040defba0                __initfunc_vmmcall_printlog_init
+                0x0000000040defbb0                __initfunc_vmmcall_listprocess_init
+                0x0000000040defbc0                __initfunc_vramwrite_init_bsp
+                0x0000000040defbd0                __initfunc_vramwrite_init_msg
+                0x0000000040defbe0                __initfunc_vt_register_status_callback
+                0x0000000040defbf0                __initfunc_vt_panic
+                0x0000000040defc00                __initfunc_xsetbv_init
+                0x0000000040defc10                __initfunc_xsetbv_pass_init
+                0x0000000040defc20                __initfunc_core_init
+                0x0000000040defc30                __initfunc_ieee1394_init_boot
+                0x0000000040defc40                __initfunc_ieee1394_init
+                0x0000000040defc50                __initfunc_iommu_setup
+                0x0000000040defc60                __initfunc_pci_init
+                0x0000000040defc70                __initfunc_ata_init
+                0x0000000040defc80                __initfunc_uhci_init
+                0x0000000040defc90                __initfunc_ehci_init
+                0x0000000040defca0                __initfunc_pro100_init
+                0x0000000040defcb0                __initfunc_suspend_pro1000
+                0x0000000040defcc0                __initfunc_resume_pro1000
+                0x0000000040defcd0                __initfunc_vpn_pro1000_init
+                0x0000000040defce0                __initfunc_storage_kernel_init
+                0x0000000040defcf0                __initfunc_storage_io_initfunc
+                0x0000000040defd00                __initfunc_vpn_kernel_init
+                0x0000000040defd10                __initfunc_idman_kernel_init
+                0x0000000040defd20                __initfunc_end = .
+                0x0000000040defd20                __process_builtin = .
  *(.processes)
- .processes     0x0000000040defc90      0x1a0 output.o
-                0x0000000040defe30                __process_builtin_end = .
+ .processes     0x0000000040defd20      0x1a0 output.o
+                0x0000000040defec0                __process_builtin_end = .
 
-.igot.plt       0x0000000040defe30        0x0 load address 0x0000000000defe30
+.igot.plt       0x0000000040defec0        0x0 load address 0x0000000000defec0
  .igot.plt      0x0000000000000000        0x0 output.o
 
 .bss            0x0000000040df0000   0x2b8000 load address 0x0000000000df0000
                 0x0000000040df0000                bss = .
  *(.bss)
- .bss           0x0000000040df0000   0x29bfc8 output.o
+ .bss           0x0000000040df0000   0x29c948 output.o
                 0x0000000040df00f0                uefi_memory_map_descsize
                 0x0000000040df4000                vmmsize
                 0x0000000040df4008                memorysize
                 0x0000000040f3ea80                pcpu_default
-                0x0000000040f45c00                ps2_locked
-                0x0000000040f67080                handler_descriptor
-                0x0000000040f67288                drhd_list_head
-                0x0000000040f68ac0                pci_driver_list_head
-                0x0000000040f68ac8                pci_device_list_head
-                0x0000000040f68ae8                uhci_monitor_boost_hc
-                0x0000000040f68b00                usb_hc_list_head
-                0x0000000040f68b08                usb_busses_head
-                0x0000000040f70408                rt
-                0x0000000041089e30                hContext
-                0x0000000041089e38                sessionTable
-                0x0000000041089e40                slotTable
-                0x0000000041089e48                slotFlag
-                0x0000000041089e49                libInitFlag
-                0x000000004108aa98                OPENSSL_NONPIC_relocated
-                0x000000004108aaa0                OPENSSL_ia32cap_P
-                0x000000004108b6e8                cleanse_ctr
-                0x000000004108b748                obj_cleanup_defer
-                0x000000004108b768                _shadow_DES_check_key
-                0x000000004108b858                app_pkey_methods
-                0x000000004108b8c0                chelp_inited
+                0x0000000040f46580                ps2_locked
+                0x0000000040f67a00                handler_descriptor
+                0x0000000040f67c08                drhd_list_head
+                0x0000000040f69440                pci_driver_list_head
+                0x0000000040f69448                pci_device_list_head
+                0x0000000040f69468                uhci_monitor_boost_hc
+                0x0000000040f69480                usb_hc_list_head
+                0x0000000040f69488                usb_busses_head
+                0x0000000040f70d88                rt
+                0x000000004108a7b0                hContext
+                0x000000004108a7b8                sessionTable
+                0x000000004108a7c0                slotTable
+                0x000000004108a7c8                slotFlag
+                0x000000004108a7c9                libInitFlag
+                0x000000004108b418                OPENSSL_NONPIC_relocated
+                0x000000004108b420                OPENSSL_ia32cap_P
+                0x000000004108c068                cleanse_ctr
+                0x000000004108c0c8                obj_cleanup_defer
+                0x000000004108c0e8                _shadow_DES_check_key
+                0x000000004108c1d8                app_pkey_methods
+                0x000000004108c240                chelp_inited
  *(COMMON)
- *fill*         0x000000004108bfc8       0x18 
- COMMON         0x000000004108bfe0    0x1b404 output.o
-                0x000000004108bfe0                clflush_size
-                0x000000004108c000                sReaderContext
-                0x000000004108c060                uefi_memory_map_data
-                0x0000000041090060                uefi_booted
-                0x0000000041090068                sigx_app
-                0x0000000041090080                log
-                0x00000000410a0080                num_dom
-                0x00000000410a00a0                mszReaders
-                0x00000000410a04a0                prohibit_iccard_init
-                0x00000000410a04a8                pci_config_mmio_data_head
-                0x00000000410a04b0                curthread
-                0x00000000410a04b8                sig_app
-                0x00000000410a04c0                readerState
-                0x00000000410a0540                dom_io
-                0x00000000410a0d40                acpi_dsdt_system_state
-                0x00000000410a0d60                ehci_host
-                0x00000000410a0d68                num_of_processors
-                0x00000000410a0d6c                e801_fake_bx
-                0x00000000410a0d6e                iommu_detected
-                0x00000000410a0d80                process
-                0x00000000410a7280                dwReaders
-                0x00000000410a72a0                readerTracker
-                0x00000000410a73e0                handler_descriptor_lock
-                0x00000000410a73e2                e801_fake_ax
+ *fill*         0x000000004108c948       0x18 
+ COMMON         0x000000004108c960    0x1b404 output.o
+                0x000000004108c960                clflush_size
+                0x000000004108c980                sReaderContext
+                0x000000004108c9e0                uefi_memory_map_data
+                0x00000000410909e0                uefi_booted
+                0x00000000410909e8                sigx_app
+                0x0000000041090a00                log
+                0x00000000410a0a00                num_dom
+                0x00000000410a0a20                mszReaders
+                0x00000000410a0e20                prohibit_iccard_init
+                0x00000000410a0e28                pci_config_mmio_data_head
+                0x00000000410a0e30                curthread
+                0x00000000410a0e38                sig_app
+                0x00000000410a0e40                readerState
+                0x00000000410a0ec0                dom_io
+                0x00000000410a16c0                acpi_dsdt_system_state
+                0x00000000410a16e0                ehci_host
+                0x00000000410a16e8                num_of_processors
+                0x00000000410a16ec                e801_fake_bx
+                0x00000000410a16ee                iommu_detected
+                0x00000000410a1700                process
+                0x00000000410a7c00                dwReaders
+                0x00000000410a7c20                readerTracker
+                0x00000000410a7d60                handler_descriptor_lock
+                0x00000000410a7d62                e801_fake_ax
                 0x00000000410a8000                . = ALIGN (0x1000)
- *fill*         0x00000000410a73e4      0xc1c 
+ *fill*         0x00000000410a7d64      0x29c 
                 0x00000000410a8000                end = .
 
 /DISCARD/
@@ -4921,24 +4921,24 @@ OUTPUT(bitvisor.elf elf64-x86-64)
  .debug_aranges
                 0x0000000000000000     0x69b0 output.o
 
-.debug_info     0x0000000000000000   0x363894
- .debug_info    0x0000000000000000   0x363894 output.o
+.debug_info     0x0000000000000000   0x363b36
+ .debug_info    0x0000000000000000   0x363b36 output.o
 
-.debug_abbrev   0x0000000000000000    0x574bf
- .debug_abbrev  0x0000000000000000    0x574bf output.o
+.debug_abbrev   0x0000000000000000    0x5756f
+ .debug_abbrev  0x0000000000000000    0x5756f output.o
 
-.debug_line     0x0000000000000000    0x4f548
- .debug_line    0x0000000000000000    0x4f548 output.o
+.debug_line     0x0000000000000000    0x4f579
+ .debug_line    0x0000000000000000    0x4f579 output.o
 
-.debug_str      0x0000000000000000    0x37ebc
- .debug_str     0x0000000000000000    0x37ebc output.o
-                                     0x15d1fd (size before relaxing)
+.debug_str      0x0000000000000000    0x37f3c
+ .debug_str     0x0000000000000000    0x37f3c output.o
+                                     0x15e1a4 (size before relaxing)
 
-.debug_loc      0x0000000000000000   0x261c9f
- .debug_loc     0x0000000000000000   0x261c9f output.o
+.debug_loc      0x0000000000000000   0x261c84
+ .debug_loc     0x0000000000000000   0x261c84 output.o
 
-.debug_ranges   0x0000000000000000     0x6270
- .debug_ranges  0x0000000000000000     0x6270 output.o
+.debug_ranges   0x0000000000000000     0x62a0
+ .debug_ranges  0x0000000000000000     0x62a0 output.o
 
 Cross Reference Table
 
@@ -8218,6 +8218,7 @@ __initfunc_vmmcall_iccard_init                    output.o
 __initfunc_vmmcall_init                           output.o
 __initfunc_vmmcall_listmodule_init                output.o
 __initfunc_vmmcall_listprocess_init               output.o
+__initfunc_vmmcall_memory_event1_init             output.o
 __initfunc_vmmcall_memory_event_init              output.o
 __initfunc_vmmcall_printlog_init                  output.o
 __initfunc_vmmcall_status_init                    output.o
@@ -8822,7 +8823,6 @@ get_time                                          output.o
 getfakesysmemmap                                  output.o
 getsysmemmap                                      output.o
 gmm_pass_gp2hp                                    output.o
-gp                                                output.o
 gs_current                                        output.o
 gs_currentcpu                                     output.o
 gs_init_count                                     output.o

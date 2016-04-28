@@ -63,6 +63,7 @@ gmm_pass_gp2hp (u64 gp, bool *fakerom)
 	bool f;
 	u64 r;
 
+ 
 	if (phys_in_vmm (gp)) {
 		r = phys_blank;
 		f = true;

@@ -1,9 +1,9 @@
 .PHONY : all
-all : listprocess listmodule dump_memory printlog memory_event
+all : listprocess listmodule dump_memory printlog memory_event memory_event1
 
 .PHONY : clean
 clean :
-	$(RM) listprocess listmodule dump_memory printlog memory_event
+	$(RM) listprocess listmodule dump_memory printlog memory_event memory_event1
 
 listprocess : listprocess.c ../common/call_vmm.c ../common/call_vmm.h
 	$(CC) -g -s -o listprocess listprocess.c ../common/call_vmm.c
@@ -19,3 +19,6 @@ printlog : printlog.c ../common/call_vmm.c ../common/call_vmm.h
 
 memory_event : memory_event.c ../common/call_vmm.c ../common/call_vmm.h
 	$(CC) -g -s -o memory_event memory_event.c ../common/call_vmm.c
+
+memory_event1 : memory_event1.c ../common/call_vmm.c ../common/call_vmm.h
+	$(CC) -g -s -o memory_event1 memory_event1.c ../common/call_vmm.c
