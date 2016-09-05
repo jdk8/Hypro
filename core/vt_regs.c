@@ -351,11 +351,17 @@ pe_change (bool pe)
 	current->u.vt.exint_update = true;
 }
 
+ 
+extern bool _reg_event_cr0_write;
+
 void
 vt_write_control_reg (enum control_reg reg, ulong val)
 {
 	switch (reg) {
 	case CONTROL_REG_CR0:
+        if (_reg_event_cr0_write == true){
+           printf("cr0 regiter is being modfied!\n");
+        }
 		asm_vmwrite (VMCS_CR0_READ_SHADOW, val);
 		if (!(val & CR0_PE_BIT))
 			val &= ~CR0_PG_BIT;

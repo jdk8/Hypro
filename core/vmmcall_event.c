@@ -111,33 +111,27 @@ static void memcpy_to_usespace(char *buf, ulong buflen)
 static u64 gvirt_addr_arr[100] = {};
 static u64 gphys_addr_arr[100] = {};
 static u64 gmm_val_arr[100] = {};
-static   int len = 0;
+static int len = 0;
+
 static void
 memory_event (void){
-    
-
-  
-
+  //print_msr = true;
     u64 next_module, list_head;
     next_module = 0xffffffff81c52ff0;
     list_head = next_module;
-    
-         while (1) {
-          u64 tmp_next = 0;
-          
-          virt_memcpy(next_module, 8, &tmp_next);
-           
-           gvirt_addr_arr[len]=next_module;
-           gphys_addr_arr[len]=virt_to_phys(next_module);
-           gmm_val_arr[len]=tmp_next;
-           len++;
-            if (list_head == tmp_next) {
-              break;
-          }
-   
-          
-          next_module = tmp_next;
-      }
+
+    while (1) {
+        u64 tmp_next = 0;     
+        virt_memcpy(next_module, 8, &tmp_next);
+        gvirt_addr_arr[len]=next_module;
+        gphys_addr_arr[len]=virt_to_phys(next_module);
+        gmm_val_arr[len]=tmp_next;
+        len++;
+        if (list_head == tmp_next) {
+            break;
+        }
+        next_module = tmp_next;
+    }
  
 }
 
@@ -145,17 +139,15 @@ memory_event (void){
 static void
 memory_event1 (void){
     int i;
-   //printf("ping-pong\n"); 
     for(i=0;i<len;i++){
-       u64 vaddr = gvirt_addr_arr[i];
-       u64 val;
-       virt_memcpy(vaddr, 8, &val);
+        u64 vaddr = gvirt_addr_arr[i];
+        u64 val;
+        virt_memcpy(vaddr, 8, &val);
         if (val!=gmm_val_arr[i]){
-         printf("vaddr: %llx, old_val: %llx, new_val: %llx\n", vaddr, gmm_val_arr[i], val);
-       gmm_val_arr[i]=val;
+            printf("vaddr: %llx, old_val: %llx, new_val: %llx\n", vaddr, gmm_val_arr[i], val);
+            gmm_val_arr[i]=val;
         }
-    //   printf("paddr: %llx, val: %llx\n", paddr, val);
-    } 
+    }
 }
 
 static void

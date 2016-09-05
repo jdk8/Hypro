@@ -53,6 +53,9 @@ cpu_emul_cpuid (void)
 	current->vmctl.write_general_reg (GENERAL_REG_RDX, od);
 }
 
+extern bool reg_event_read;
+extern bool reg_event_write;
+
 bool
 cpu_emul_rdmsr (void)
 {
@@ -65,6 +68,24 @@ cpu_emul_rdmsr (void)
 	current->vmctl.read_general_reg (GENERAL_REG_RCX, &lc);
 	ic = lc;
 	err = current->vmctl.read_msr (ic, &msrdata);
+	if (ic==MSR_IA32_STAR && reg_event_read==true) {
+		printf("MSR_IA32_STAR register read.\n");
+	}
+	if (ic==MSR_IA32_LSTAR && reg_event_read==true) {
+		printf("MSR_IA32_LSTAR register read.\n");
+	}
+	if (ic==MSR_AMD_CSTAR && reg_event_read==true) {
+		printf("MSR_AMD_CSTAR register read.\n");
+	}
+	if (ic==MSR_IA32_SYSENTER_CS && reg_event_read==true) {
+		printf("MSR_IA32_SYSENTER_CS register read.\n");
+	}
+	if (ic==MSR_IA32_SYSENTER_ESP && reg_event_read==true) {
+		printf("MSR_IA32_SYSENTER_ESP register read.\n");
+	}
+	if (ic==MSR_IA32_SYSENTER_EIP && reg_event_read==true) {
+		printf("MSR_IA32_SYSENTER_EIP register read.\n");
+	}
 	conv64to32 (msrdata, &oa, &od);
 	current->vmctl.write_general_reg (GENERAL_REG_RAX, oa);
 	current->vmctl.write_general_reg (GENERAL_REG_RDX, od);
@@ -82,7 +103,26 @@ cpu_emul_wrmsr (void)
 	current->vmctl.read_general_reg (GENERAL_REG_RCX, &ic);
 	current->vmctl.read_general_reg (GENERAL_REG_RAX, &ia);
 	current->vmctl.read_general_reg (GENERAL_REG_RDX, &id);
+	if (ic==MSR_IA32_STAR && reg_event_write==true) {
+		printf("MSR_IA32_STAR register write.\n");
+	}
+	if (ic==MSR_IA32_LSTAR && reg_event_write==true) {
+		printf("MSR_IA32_LSTAR register write.\n");
+	}
+	if (ic==MSR_AMD_CSTAR && reg_event_write==true) {
+		printf("MSR_AMD_CSTAR register write.\n");
+	}
+	if (ic==MSR_IA32_SYSENTER_CS && reg_event_write==true) {
+		printf("MSR_IA32_SYSENTER_CS register write.\n");
+	}
+	if (ic==MSR_IA32_SYSENTER_ESP && reg_event_write==true) {
+		printf("MSR_IA32_SYSENTER_ESP register write.\n");
+	}
+	if (ic==MSR_IA32_SYSENTER_EIP && reg_event_write==true) {
+		printf("MSR_IA32_SYSENTER_EIP register write.\n");
+	}
 	conv32to64 (ia, id, &msrdata);
+	
 	err = current->vmctl.write_msr (ic, msrdata);
 	return err;
 }

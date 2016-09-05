@@ -79,7 +79,7 @@ do_mov_cr (void)
 		struct exit_qual_cr s;
 		ulong v;
 	} eqc;
-
+    
 	asm_vmread (VMCS_EXIT_QUALIFICATION, &eqc.v);
 	switch (eqc.s.type) {
 	case EXIT_QUAL_CR_TYPE_MOV_TO_CR:

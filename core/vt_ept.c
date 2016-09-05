@@ -56,6 +56,8 @@ struct vt_ept {
 	phys_t tbl_phys[NUM_OF_EPTBL];
 };
 
+static int tbl_counter = 0;
+
 void
 vt_ept_init (void)
 {
@@ -65,14 +67,17 @@ vt_ept_init (void)
 	ept = alloc (sizeof *ept);
 	alloc_page (&ept->ncr3tbl, &ept->ncr3tbl_phys);
 	memset (ept->ncr3tbl, 0, PAGESIZE);
-	for (i = 0; i < NUM_OF_EPTBL; i++)
+	for (i = 0; i < NUM_OF_EPTBL; i++) {
 		alloc_page (&ept->tbl[i], &ept->tbl_phys[i]);
+		//printf("tbl %d, phys = %llx, counter = %d\n", i, ept->tbl_phys[i], tbl_counter++);
+	}
 	ept->cnt = 0;
 	current->u.vt.ept = ept;
 	asm_vmwrite64 (VMCS_EPT_POINTER, ept->ncr3tbl_phys |
 		       VMCS_EPT_POINTER_EPT_WB | VMCS_EPT_PAGEWALK_LENGTH_4);
 }
 
+// WRITE IS THE OP FLAG OF THIS MAP
 static void
 vt_ept_map_page (bool write, u64 gphys)
 {
@@ -122,8 +127,12 @@ vt_ept_map_page (bool write, u64 gphys)
 		
 	
 	if (fakerom)
-		hattr &= ~EPTE_WRITE;
+		hattr &= ~EPTE_WRITE;// store the access write
 	*p = hphys | hattr;
+
+	if ( tbl_counter < 1024 ){
+		printf("gphys=%llx, tbl_COUNTER=%d, pte attr=%llx\n", gphys, tbl_counter++, *p);
+	}
 }
 
 void

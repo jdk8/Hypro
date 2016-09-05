@@ -24,12 +24,19 @@
  * along with LibVMI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <linux/fs.h>
+#include <linux/miscdevice.h>
+#include <linux/workqueue.h>
+#include <linux/io.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/sched.h>
 
+
 #define MYMODNAME "FindOffsets "
+
+typedef unsigned long long u64;
 
 static int my_init_module(
     void);
@@ -47,6 +54,7 @@ my_init_module(
     unsigned long pidOffset;
     unsigned long pgdOffset;
     unsigned long addrOffset;
+    u64 phys_addr;
 
     printk(KERN_ALERT "Module %s loaded.\n\n", MYMODNAME);
     p = current;
@@ -76,6 +84,10 @@ my_init_module(
                (unsigned int) pidOffset);
         printk(KERN_ALERT "    linux_pgd = 0x%x;\n",
                (unsigned int) pgdOffset);
+
+        phys_addr = virt_to_phys((volatile void *)0xffffffff81c15480);
+
+        printk(KERN_ALERT " phys_addr = 0x%llx;\n", phys_addr);
         printk(KERN_ALERT "}\n");
     }
     else {

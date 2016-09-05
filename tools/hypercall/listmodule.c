@@ -6,7 +6,7 @@
 int
 main()
 {
-        char buf[USHRT_MAX];//
+    char buf[USHRT_MAX];//
     call_vmm_function_t f;
     call_vmm_arg_t a;
     call_vmm_ret_t r;

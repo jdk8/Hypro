@@ -13,6 +13,141 @@
 #include "tty.h"
 #include "limits.h"
 
+#define NUM_OF_EPTBL    1024
+#define EPTE_READ   0x1
+#define EPTE_READEXEC   0x5
+#define EPTE_WRITE  0x2
+#define EPTE_ATTR_MASK  0xFFF
+#define EPTE_MT_SHIFT   3
+#define EPT_LEVELS  4
+
+struct vt_ept {
+    int cnt;
+    void *ncr3tbl;
+    phys_t ncr3tbl_phys;
+    void *tbl[NUM_OF_EPTBL];
+    phys_t tbl_phys[NUM_OF_EPTBL];
+};
+
+// WRITE IS THE OP FLAG OF THIS MAP
+static u64
+get_pte (bool write, u64 gphys)
+{
+    int l;
+    bool fakerom;
+    u64 hphys;
+    u32 hattr;
+    struct vt_ept *ept;
+    u64 *p, *q, e;
+
+    ept = current->u.vt.ept;
+    q = ept->ncr3tbl;
+    q += (gphys >> (EPT_LEVELS * 9 + 3)) & 0x1FF;
+    p = q;
+    for (l = EPT_LEVELS - 1; l > 0; l--) {
+        e = *p;
+        if (!(e & EPTE_READ)) {
+            if (ept->cnt + l > NUM_OF_EPTBL) {
+                /* printf ("!"); */
+                memset (ept->ncr3tbl, 0, PAGESIZE);
+                ept->cnt = 0;
+                vt_paging_flush_guest_tlb ();
+                l = EPT_LEVELS - 1;
+                p = q;
+            }
+            break;
+        }
+        e &= ~PAGESIZE_MASK;
+        e |= (gphys >> (9 * l)) & 0xFF8;
+        p = (u64 *)phys_to_virt (e);
+    }
+    for (; l > 0; l--) {
+         
+        *p = ept->tbl_phys[ept->cnt] | EPTE_READEXEC | EPTE_WRITE;
+ 
+        
+        p = ept->tbl[ept->cnt++];
+        memset (p, 0, PAGESIZE);
+        p += (gphys >> (9 * l + 3)) & 0x1FF;
+    }
+    hphys = current->gmm.gp2hp (gphys, &fakerom) & ~PAGESIZE_MASK;
+
+    if (fakerom && write)
+        panic ("EPT: Writing to VMM memory.");
+    hattr = (cache_get_gmtrr_type (gphys) << EPTE_MT_SHIFT) |
+        EPTE_READEXEC | EPTE_WRITE;
+        
+    if (fakerom)
+        hattr &= ~EPTE_WRITE;// store the access write
+
+    //if ( tbl_counter < 1024 ){
+        //printf("gphys=%llx, tbl_COUNTER=%d, pte attr=%llx\n", gphys, tbl_counter++, *p);
+    //}
+
+    return *p;
+}
+
+// WRITE IS THE OP FLAG OF THIS MAP
+static u64
+set_pte (bool write, u64 gphys)
+{
+    int l;
+    bool fakerom;
+    u64 hphys;
+    u32 hattr;
+    struct vt_ept *ept;
+    u64 *p, *q, e;
+
+    ept = current->u.vt.ept;
+    q = ept->ncr3tbl;
+    q += (gphys >> (EPT_LEVELS * 9 + 3)) & 0x1FF;
+    p = q;
+    for (l = EPT_LEVELS - 1; l > 0; l--) {
+        e = *p;
+        if (!(e & EPTE_READ)) {
+            if (ept->cnt + l > NUM_OF_EPTBL) {
+                /* printf ("!"); */
+                memset (ept->ncr3tbl, 0, PAGESIZE);
+                ept->cnt = 0;
+                vt_paging_flush_guest_tlb ();
+                l = EPT_LEVELS - 1;
+                p = q;
+            }
+            break;
+        }
+        e &= ~PAGESIZE_MASK;
+        e |= (gphys >> (9 * l)) & 0xFF8;
+        p = (u64 *)phys_to_virt (e);
+    }
+    for (; l > 0; l--) {
+         
+        *p = ept->tbl_phys[ept->cnt] | EPTE_READEXEC | EPTE_WRITE;
+ 
+        
+        p = ept->tbl[ept->cnt++];
+        memset (p, 0, PAGESIZE);
+        p += (gphys >> (9 * l + 3)) & 0x1FF;
+    }
+    hphys = current->gmm.gp2hp (gphys, &fakerom) & ~PAGESIZE_MASK;
+
+    if (fakerom && write)
+        panic ("EPT: Writing to VMM memory.");
+    hattr = (cache_get_gmtrr_type (gphys) << EPTE_MT_SHIFT) |
+        EPTE_READEXEC | EPTE_WRITE;
+        
+    hattr &= ~EPTE_WRITE;
+    
+    if (fakerom)
+        hattr &= ~EPTE_WRITE;// store the access write
+    *p = hphys | hattr;
+
+    //if ( tbl_counter < 1024 ){
+        //printf("gphys=%llx, tbl_COUNTER=%d, pte attr=%llx\n", gphys, tbl_counter++, *p);
+    //}
+
+    return *p;
+}
+
 typedef enum status{
   VMI_SUCCESS = 0,
   VMI_FAILURE = 1
@@ -61,6 +196,42 @@ u64 vmi_translate_ksym2v(char * ksym)
         addr  = htoi(config.vmi.init_task);
     }
     return addr;
+}
+
+u64 virt_pte(ulong virtaddr){
+    struct memdump_data data;
+    u64 ent[5];
+    int r, levels;
+    memset(ent, 0, sizeof(ent));
+    memset(&data, 0, sizeof(struct memdump_data));
+    data.virtaddr = virtaddr;
+    get_control_regs((ulong *)&data.cr0, (ulong *)&data.cr3, (ulong *)&data.cr4, &data.efer);
+    r = cpu_mmu_get_pte(data.virtaddr, (ulong)data.cr0, (ulong)data.cr3, (ulong)data.cr4, data.efer, false, false, false, ent, &levels);
+    
+    if (r ==  VMMERR_SUCCESS){
+        return ent[0];
+    }
+
+    return 0;
+}
+
+
+u64 virt_phys(ulong virtaddr){
+    struct memdump_data data;
+    u64 ent[5];
+    int r, levels;
+    memset(ent, 0, sizeof(ent));
+    memset(&data, 0, sizeof(struct memdump_data));
+    data.virtaddr = virtaddr;
+    get_control_regs((ulong *)&data.cr0, (ulong *)&data.cr3, (ulong *)&data.cr4, &data.efer);
+    r = cpu_mmu_get_pte(data.virtaddr, (ulong)data.cr0, (ulong)data.cr3, (ulong)data.cr4, data.efer, false, false, false, ent, &levels);
+    
+    if (r ==  VMMERR_SUCCESS){
+        data.physaddr = (ent[0] & PTE_ADDR_MASK64) | ((data.virtaddr) & 0xFFF);
+        return data.physaddr;
+    }
+
+    return 0;
 }
 
 int
@@ -171,8 +342,11 @@ static void memcpy_to_usespace(char *buf, ulong buflen)
     return;
 }
 
+extern bool print_msr = false;
+
 static void
 listprocess (void){
+   print_msr = true;
     u64 current_process;
     unsigned long tasks_offset, pid_offset, name_offset;
     u64 list_head = 0, next_list_entry = 0;
@@ -185,6 +359,10 @@ listprocess (void){
     list_head = vmi_translate_ksym2v("init_task") + tasks_offset;
 
     next_list_entry = list_head;
+
+    printf("set pte is: %llx\n", set_pte(false, 0x1c15480));
+    printf("get pte is: %llx\n", get_pte(false, 0x1c15480));
+
     do {
         current_process = next_list_entry - tasks_offset;
         virt_memcpy(current_process + pid_offset, 4, &pid);
@@ -193,6 +371,9 @@ listprocess (void){
         procname = read_str_va(current_process + name_offset);
         printf("process name: %s", procname);
         printf("  (struct addr:%llx\t", current_process);
+        printf("PTE is: %llx\t", virt_pte(current_process));
+        printf("phys addr is: %llx\t", virt_phys(current_process));
+        
         virt_memcpy(next_list_entry, 8, &next_list_entry);
         printf("val is %llx\n", next_list_entry);
         free(procname);
@@ -287,7 +468,6 @@ static int listmodule()
  
     while (list_head != next_module)
     {
-    
         char *modname = NULL;
         int bufusedsize, namesize;//
         modname = read_str_va(next_module + 16);

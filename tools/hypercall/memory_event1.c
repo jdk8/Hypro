@@ -6,15 +6,11 @@
 static int
 vmmcall_memory_event1 (void)
 {
-
-
-        char buf[USHRT_MAX];//
- 
+    char buf[USHRT_MAX];//
     call_vmm_function_t f;
     call_vmm_arg_t a;
     call_vmm_ret_t r;
-      memset(buf, 0, USHRT_MAX);//
-
+    memset(buf, 0, USHRT_MAX);//
 
     CALL_VMM_GET_FUNCTION ("vmmcall_memory_event1", &f);
  
@@ -27,10 +23,10 @@ vmmcall_memory_event1 (void)
     memset(&r, 0, sizeof(call_vmm_ret_t));//
 
     a.rbx = (unsigned long long)buf;//
-       a.rcx = USHRT_MAX;//
+    a.rcx = USHRT_MAX;//
        
     call_vmm_call_function (&f, &a, &r);
-  printf("%s", buf);//
+    printf("%s", buf);//
 
     return 0;
 }
@@ -44,9 +40,8 @@ static void memory_event1()
 int
 main()
 {
-   for(;;){
-    usleep(1000);
-     memory_event1();
-   }
-  
+    for(;;){
+        usleep(100);
+        memory_event1();
+    }
 }
