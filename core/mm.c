@@ -1982,11 +1982,13 @@ pmap_dump (pmap_t *m)
 
 /**********************************************************************/
 /*** accessing physical memory ***/
-
+bool print_mm;
 static void *
 hphys_mapmem (u64 phys, u32 attr, uint len, bool wr)
 {
+	
 	void *p;
+ 
 
 	p = mapmem  (MAPMEM_HPHYS |
 		     (wr ? MAPMEM_WRITE : 0) |
@@ -1994,6 +1996,9 @@ hphys_mapmem (u64 phys, u32 attr, uint len, bool wr)
 		     ((attr & PTE_PCD_BIT) ? MAPMEM_PCD : 0) |
 		     ((attr & PTE_PAT_BIT) ? MAPMEM_PAT : 0), phys, len);
 	ASSERT (p);
+	
+
+
 	return p;
 }
 

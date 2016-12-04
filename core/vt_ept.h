@@ -35,7 +35,7 @@
 struct vcpu;
 
 void vt_ept_init (void);
-void vt_ept_violation (bool write, u64 gphys);
+void vt_ept_violation (bool write, u64 gphys, u64 eq);
 void vt_ept_tlbflush (void);
 void vt_ept_updatecr3 (void);
 void vt_ept_clear_all (void);

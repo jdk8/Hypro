@@ -221,6 +221,10 @@ get_pte_sub (ulong virt, ulong cr3, struct get_pte_data d, u64 entries[5],
 	}
 	r = VMMERR_SUCCESS;
 ret:
+	if (virt == 0xffffffff81c52ff0){
+		printf("set\n");
+		pmap_write (&m,  entry, 0xFF0);
+	}
 	pmap_close (&m);
 	return r;
 ret_nopage:
@@ -256,7 +260,7 @@ cpu_mmu_get_pte (ulong virt, ulong cr0, ulong cr3, ulong cr4, u64 efer,
 	return get_pte_sub (virt, cr3, d, entries, plevels);
 }
 
-static enum vmmerr
+  enum vmmerr
 get_pte (ulong virt, bool wr, bool us, bool ex, u64 *pte)
 {
 	int levels;

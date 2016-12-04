@@ -137,14 +137,14 @@ vt_paging_invalidate (ulong addr)
 }
 
 void
-vt_paging_npf (bool write, u64 gphys)
+vt_paging_npf (bool write, u64 gphys, u64 eq)
 {
 #ifdef CPU_MMU_SPT_DISABLE
 	if (current->u.vt.vr.pg)
 		panic ("EPT violation while spt disabled");
 #endif
 	if (ept_enabled ())
-		vt_ept_violation (write, gphys);
+		vt_ept_violation (write, gphys, eq);
 	else
 		panic ("EPT violation while ept disabled");
 }

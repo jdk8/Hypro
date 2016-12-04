@@ -41,7 +41,7 @@ void vt_paging_init (void);
 void vt_paging_pagefault (ulong err, ulong cr2);
 void vt_paging_tlbflush (void);
 void vt_paging_invalidate (ulong addr);
-void vt_paging_npf (bool write, u64 gphys);
+void vt_paging_npf (bool write, u64 gphys, u64 eq);
 void vt_paging_updatecr3 (void);
 void vt_paging_spt_setcr3 (ulong cr3);
 void vt_paging_clear_all (void);

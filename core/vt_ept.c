@@ -76,11 +76,12 @@ vt_ept_init (void)
 	asm_vmwrite64 (VMCS_EPT_POINTER, ept->ncr3tbl_phys |
 		       VMCS_EPT_POINTER_EPT_WB | VMCS_EPT_PAGEWALK_LENGTH_4);
 }
-
+ 
 // WRITE IS THE OP FLAG OF THIS MAP
-static void
-vt_ept_map_page (bool write, u64 gphys)
+  void
+vt_ept_map_page (bool write, u64 gphys, u64 eq, bool guest)
 {
+	
  	int l;
 	bool fakerom;
 	u64 hphys;
@@ -111,9 +112,9 @@ vt_ept_map_page (bool write, u64 gphys)
 	}
 	for (; l > 0; l--) {
 		 
-		*p = ept->tbl_phys[ept->cnt] | EPTE_READEXEC | EPTE_WRITE;
- 
-		
+     		*p = ept->tbl_phys[ept->cnt] | EPTE_READEXEC | EPTE_WRITE;
+     	 
+		 
 		p = ept->tbl[ept->cnt++];
 		memset (p, 0, PAGESIZE);
 		p += (gphys >> (9 * l + 3)) & 0x1FF;
@@ -124,23 +125,23 @@ vt_ept_map_page (bool write, u64 gphys)
 		panic ("EPT: Writing to VMM memory.");
 	hattr = (cache_get_gmtrr_type (gphys) << EPTE_MT_SHIFT) |
 		EPTE_READEXEC | EPTE_WRITE;
-		
-	
-	if (fakerom)
+ 
+if (gphys == 0x1c52ff0  && guest == true) {
+    	hattr &= ~EPTE_WRITE;
+    	hattr &= ~EPTE_READEXEC;
+    	printf("set over\n");
+    }
+	if (fakerom  )
 		hattr &= ~EPTE_WRITE;// store the access write
 	*p = hphys | hattr;
-
-	if ( tbl_counter < 1024 ){
-		printf("gphys=%llx, tbl_COUNTER=%d, pte attr=%llx\n", gphys, tbl_counter++, *p);
-	}
 }
 
 void
-vt_ept_violation (bool write, u64 gphys)
+vt_ept_violation (bool write, u64 gphys, u64 eq)
 {
 	mmio_lock ();
-	if (!mmio_access_page (gphys, true))
-		vt_ept_map_page (write, gphys);
+	if (!mmio_access_page (gphys, true))// || gphys == 0x1c52ff0)
+		vt_ept_map_page (write, gphys, eq, false);
 	mmio_unlock ();
 }
 
@@ -216,7 +217,7 @@ vt_ept_map_1mb (void)
 	for (gphys = 0; gphys < 0x100000; gphys += PAGESIZE) {
 		mmio_lock ();
 		if (!mmio_access_page (gphys, false))
-			vt_ept_map_page (false, gphys);
+			vt_ept_map_page (false, gphys, 0, false);
 		mmio_unlock ();
 	}
 }

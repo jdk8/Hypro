@@ -712,16 +712,25 @@ do_xsetbv (void)
 		add_ip ();
 }
 
+
+static int counter = 0;
 static void
 do_ept_violation (void)
 {
 	ulong eqe;
 	u64 gp;
+	u64 gl;
 
 	asm_vmread (VMCS_EXIT_QUALIFICATION, &eqe);
 	asm_vmread64 (VMCS_GUEST_PHYSICAL_ADDRESS, &gp);
 
-	vt_paging_npf (!!(eqe & EPT_VIOLATION_EXIT_QUAL_WRITE_BIT), gp);
+      asm_vmread64(VMCS_GUEST_LINEAR_ADDR, &gl) ;
+    if (gp == 0x1c52ff0) {
+    	printf("ept_violation eq=%llx\tgl=%llx\n", eqe, gl);
+    }
+
+	vt_paging_npf (!!(eqe & EPT_VIOLATION_EXIT_QUAL_WRITE_BIT), gp, eqe);
+    
 }
 
 static void
