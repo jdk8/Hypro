@@ -22,11 +22,11 @@ main()
     memset(&a, 0, sizeof(call_vmm_arg_t));//
     memset(&r, 0, sizeof(call_vmm_ret_t));//
 
-    a.rbx =  0xffffffff81801400;//ffffffff81801400
+    a.rbx =  (unsigned long long)buf;//ffffffff81801400
     a.rcx = USHRT_MAX;//
     call_vmm_call_function(&f, &a, &r);
 
- //   printf("%s", buf);//
+    printf("%s", buf);//
 
     return 0;
 }

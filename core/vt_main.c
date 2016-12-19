@@ -726,7 +726,7 @@ do_ept_violation (void)
 
       asm_vmread64(VMCS_GUEST_LINEAR_ADDR, &gl) ;
     if (gp == 0x1c52ff0) {
-    	printf("ept_violation eq=%llx\tgl=%llx\n", eqe, gl);
+    	printf("VMM: Guest physical address %llx is being accessed.\n", gp);
     }
 
 	vt_paging_npf (!!(eqe & EPT_VIOLATION_EXIT_QUAL_WRITE_BIT), gp, eqe);

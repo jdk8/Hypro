@@ -221,10 +221,7 @@ get_pte_sub (ulong virt, ulong cr3, struct get_pte_data d, u64 entries[5],
 	}
 	r = VMMERR_SUCCESS;
 ret:
-	if (virt == 0xffffffff81c52ff0){
-		printf("set\n");
-		pmap_write (&m,  entry, 0xFF0);
-	}
+ 
 	pmap_close (&m);
 	return r;
 ret_nopage:

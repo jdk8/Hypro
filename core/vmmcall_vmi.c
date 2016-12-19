@@ -238,13 +238,12 @@ static void memcpy_to_usespace(char *buf, ulong buflen)
     current->vmctl.read_control_reg (CONTROL_REG_CR4, &cr4);
     current->vmctl.read_msr (MSR_IA32_EFER, &efer);
 
-    for (i=0; i < 100 ; i++)
+    for (i=0; i < buflen ; i++)
     {
         ret = cpu_mmu_get_pte(rbx+i, cr0, cr3, cr4, efer, true, false, false, ent, &levels);
     if (ret == VMMERR_SUCCESS)
     {
             physaddr = (ent[0] & PTE_ADDR_MASK64) | ((rbx+i) & 0xFFF);
-            printf("physaddr =%llx, buf =%llx\n", physaddr, (rbx+i));
             write_hphys_b(physaddr, *(buf+i), 0);
     }
     else
@@ -255,6 +254,13 @@ static void memcpy_to_usespace(char *buf, ulong buflen)
 }
 
 extern bool print_mm = false;
+
+static void
+set_pte (void){
+
+   vt_ept_map_page (false, 0x1c52ff0, 0, true);
+
+}
 
 static void
 listprocess (void){
@@ -274,18 +280,6 @@ listprocess (void){
 
     next_list_entry = list_head;
 
-  vt_ept_map_page (false, 0x1c52ff0, 0, true);
-//get_pte (0xffffffff81c52ff0, false, false /*FIXME*/, false /*FIXME*/, &pte);
-
-//printf("pte = %llx\n", pte);
-//
-//    printf("virt = %llx\t phys =%llx\n", 0xffffffff81c52ff0, virt_phys(0xffffffff81c52ff0));;
- //   printf("result = %d\n",virt_memcpy1(0xffffffff81c52ff0, 0xffffffff81c52ff0));
-  //  get_pte (0xffffffff81c52ff0, false, false /*FIXME*/, false /*FIXME*/, &pte);
-
-//printf("pte = %llx\n", pte);
-
-/*
     do {
         current_process = next_list_entry - tasks_offset;
         virt_memcpy(current_process + pid_offset, 4, &pid);
@@ -293,14 +287,11 @@ listprocess (void){
         char *procname = NULL;
         procname = read_str_va(current_process + name_offset);
         printf("process name: %s", procname);
-        printf("  (struct addr:%llx\t", current_process);
-        printf("PTE is: %llx\t", virt_pte(current_process));
-        printf("phys addr is: %llx\t", virt_phys(current_process));
-        
+        printf("  (struct addr:%llx\n", current_process);
+   
         virt_memcpy(next_list_entry, 8, &next_list_entry);
-        printf("val is %llx\n", next_list_entry);
         free(procname);
-     } while (next_list_entry != list_head);*/
+     } while (next_list_entry != list_head);
 }
 
 static void dump_memory()
@@ -375,7 +366,7 @@ get_vmmlog(){
 static int listmodule()
 {
     ulong rcx = 0, bufsize;  //
-    u64 next_module, list_head = next_module = 0xffffffff81c52ff0;
+    u64 next_module, list_head = next_module = 0xffffffff81a27fd0;
 
     current->vmctl.read_general_reg (GENERAL_REG_RCX, &rcx);//
     bufsize = rcx < USHRT_MAX ? rcx : USHRT_MAX;//
@@ -416,6 +407,14 @@ vmmcall_listprocess_init (void){
     vmmcall_register ("vmmcall_listprocess", listprocess);
 }
 
+
+
+static void
+vmmcall_set_pte_init (void){
+    vmmcall_register ("vmmcall_set_pte", set_pte);
+}
+
+
 static void
 vmmcall_printlog_init(){
     vmmcall_register ("vmmcall_getvmmlog", get_vmmlog);
@@ -431,7 +430,10 @@ vmmcall_listmodule_init(){
   vmmcall_register ("vmmcall_listmodule", listmodule);
 }
 
+
+
 INITFUNC ("vmmcal0", vmmcall_listprocess_init);
+INITFUNC ("vmmcal0", vmmcall_set_pte_init);
 INITFUNC ("vmmcal0", vmmcall_printlog_init);
 INITFUNC ("vmmcal0", vmmcall_dump_memory_init);
 INITFUNC ("vmmcal0", vmmcall_listmodule_init);

@@ -126,10 +126,10 @@ vt_ept_map_page (bool write, u64 gphys, u64 eq, bool guest)
 	hattr = (cache_get_gmtrr_type (gphys) << EPTE_MT_SHIFT) |
 		EPTE_READEXEC | EPTE_WRITE;
  
-if (gphys == 0x1c52ff0  && guest == true) {
+if (gphys == 0x1c52ff0 && guest == true) {
     	hattr &= ~EPTE_WRITE;
     	hattr &= ~EPTE_READEXEC;
-    	printf("set over\n");
+    	printf("Set guest physcial address: %llx succeed.\n", gphys);
     }
 	if (fakerom  )
 		hattr &= ~EPTE_WRITE;// store the access write
